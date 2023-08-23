@@ -39,7 +39,7 @@ clean() {
 }
 
 compress_build() {
-    tar -cJpf ../$OUTPUT.tar.xz .
+    tar -c -I 'xz -9 -T0' -f $OUTPUT.tar.xz .
 }
 
 setup_chroot() {
