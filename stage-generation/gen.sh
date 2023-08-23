@@ -26,4 +26,5 @@ else
     exit 1
 fi
 
+clean_cache
 compress_build
