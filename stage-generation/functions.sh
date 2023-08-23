@@ -55,3 +55,7 @@ setup_chroot() {
 unmount_chroot() {
     umount -R *
 }
+
+clean_cache() {
+    rm -rf var/cache/distfiles/*
+}
