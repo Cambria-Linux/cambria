@@ -1,6 +1,6 @@
 # Cambria Linux
 
-[English Version](https://github.com/cambria-linux/cambria/README-en.md)
+[English Version](https://github.com/Cambria-Linux/cambria/blob/main/README-en.md)
 
 Cambria Linux est un installateur rapide et facile d'utilisation pour la distribution Gentoo.
 Le projet se veut être le descendant d'[Orchid Linux](https://github.com/orchid-linux/orchid/), à qui l'idée à été reprise.
