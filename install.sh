@@ -4,6 +4,14 @@
 
 BASE_FILE="cambria-stage4-base.tar.xz"
 
+user_account() {
+    echo "User account creation: "
+    echo ""
+    read -p "What will be your username ? " USERNAME
+    printf "What will be your password (input is hidden) ? "
+    read -s USER_PASSWORD
+}
+
 timezone() {
     echo "Timezone selection:"
     unset TIMEZONE location country listloc listc countrypart
@@ -210,4 +218,6 @@ clear
 uefi_part_selection
 clear
 timezone
+clear
+user_account
 clear
