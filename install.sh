@@ -4,6 +4,25 @@
 
 BASE_FILE="cambria-stage4-base.tar.xz"
 
+stage_selection() {
+    INVALID_CHOICE=1
+
+    while [ "$INVALID_CHOICE" == "1" ]; do
+        echo "SYSTEM SELECTION:"
+        echo "[1] BASE"
+        echo ""
+        read -p "Your choice: " CHOICE
+
+        if [ "$CHOICE" == "1" ]; then
+            INVALID_CHOICE=0
+
+        else
+            clear
+            INVALID_CHOICE=1
+        fi
+    done
+}
+
 disk_selection() {
     echo "Disk selection:"
     i=1
@@ -24,9 +43,7 @@ disk_selection() {
     done
 
     if [ "$DISK" == "" ]; then
-        echo ""
-        echo "Invalid choice !"
-        echo ""
+        clear
         disk_selection
     fi
 }
@@ -46,6 +63,7 @@ root_part_selection() {
         i=$((i+1))
     done
     
+    echo ""
     read -p "Your choice: " CHOICE
 
     i=0
@@ -62,10 +80,56 @@ root_part_selection() {
     done
 
     if [ "$ROOT_PART" == "" ]; then
-        echo ""
-        echo "Invalid choice !"
-        echo ""
+        clear
         root_part_selection
+    fi
+}
+
+uefi_part_selection() {
+    parts=$(ls $DISK* | grep "$DISK.*")
+    echo "UEFI partition selection:"
+    echo ""
+    i=0
+    for part in $parts; do
+        if [ "$i" == "0" ]; then
+            i=$((i+1))
+            continue
+        fi
+
+        if [ "$part" == "$ROOT_PART" ]; then
+            i=$((i-1))
+            continue
+        fi
+
+        echo "[$i] $part"
+        i=$((i+1))
+    done
+    
+    echo ""
+    read -p "Your choice: " CHOICE
+
+    i=0
+    for part in $parts; do
+        if [ "$i" == "0" ]; then
+            i=$((i+1))
+            continue
+        fi
+
+        if [ "$part" == "$ROOT_PART" ]; then
+            i=$((i-1))
+            continue
+        fi
+
+        if [ "$i" == "$CHOICE" ]; then
+            UEFI_PART=$part
+        fi
+
+        i=$((i+1))
+    done
+
+    if [ "$UEFI_PART" == "" ]; then
+        clear
+        uefi_part_selection
     fi
 }
 
@@ -85,26 +149,13 @@ if [ "$READY" != "Y" ] && [ "$READY" != "y" ]; then
     exit
 fi
 
-INVALID_CHOICE=1
-
-while [ "$INVALID_CHOICE" == "1" ]; do
-    echo "SYSTEM SELECTION:"
-    echo "[1] BASE"
-    echo ""
-    read -p "Your choice: " CHOICE
-
-    if [ "$CHOICE" == "1" ]; then
-        INVALID_CHOICE=0
-
-    else
-        echo ""
-        echo "Invalid choice !"
-        echo ""
-        INVALID_CHOICE=1
-    fi
-done
-
 echo ""
 
+clear
+stage_selection
+clear
 disk_selection
+clear
 root_part_selection
+clear
+uefi_part_selection
