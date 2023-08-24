@@ -59,4 +59,5 @@ menu() {
 
 menu
 clean_cache
+clean_dev
 compress_build

@@ -63,3 +63,7 @@ unmount_chroot() {
 clean_cache() {
     rm -rf var/cache/distfiles/*
 }
+
+clean_dev() {
+    rm -rf dev/*
+}
