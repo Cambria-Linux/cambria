@@ -15,6 +15,9 @@ extract_stage() {
 }
 
 configure_portage() {
+    if [ "$PARALLEL_BUILD" == "1" ]; then
+        echo "EMERGE_DEFAULT_OPTS=\"--jobs $PARALLEL_JOBS\"" >> etc/portage/make.conf
+    fi
     echo "VIDEO_CARDS=\"amdgpu i915 i965 nouveau nvidia osmesa r100 r200 radeonsi radeon swrast virgl\"" >> etc/portage/make.conf
     echo "FEATURES=\"parallel-fetch noinfo nodoc parallel-install candy unmerge-orphans\"" >> etc/portage/make.conf
     echo "USE=\"$USEFLAGS\"" >> etc/portage/make.conf
