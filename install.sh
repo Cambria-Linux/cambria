@@ -4,6 +4,13 @@
 
 BASE_FILE="cambria-stage4-base.tar.xz"
 
+root_password() {
+    echo "Root account configuration:"
+    echo ""
+    printf "What will be the root account password ? (input is hidden) "
+    read -s ROOT_PASSWORD
+}
+
 user_account() {
     echo "User account creation: "
     echo ""
@@ -154,7 +161,9 @@ uefi_part_selection() {
         fi
 
         if [ "$part" == "$ROOT_PART" ]; then
-            i=$((i-1))
+            if [ "$i" != "1" ]; then
+                i=$((i-1))
+            fi
             continue
         fi
 
@@ -173,7 +182,9 @@ uefi_part_selection() {
         fi
 
         if [ "$part" == "$ROOT_PART" ]; then
-            i=$((i-1))
+            if [ "$i" != "1" ]; then
+                i=$((i-1))
+            fi
             continue
         fi
 
@@ -220,4 +231,6 @@ clear
 timezone
 clear
 user_account
+clear
+root_password
 clear
