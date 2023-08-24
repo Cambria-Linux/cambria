@@ -1,5 +1,7 @@
 # Cambria Linux
 
+![Cambria Banner](images/banner.png)
+
 [English Version](https://github.com/Cambria-Linux/cambria/blob/main/README-en.md)
 
 Cambria Linux est un installateur rapide et facile d'utilisation pour la distribution Gentoo.

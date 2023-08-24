@@ -1,5 +1,7 @@
 # Cambria Linux
 
+![Bannière Cambria](images/banner.png)
+
 Cambria Linux is a fast and easy installer for Gentoo.
 The project aims to be a descendant of [Orchid Linux](https://github.com/orchid-linux/orchid/). The idea behind the project was picked up from Orchid.
 
