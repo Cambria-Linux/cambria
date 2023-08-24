@@ -4,6 +4,55 @@
 
 BASE_FILE="cambria-stage4-base.tar.xz"
 
+timezone() {
+    echo "Timezone selection:"
+    unset TIMEZONE location country listloc listc countrypart
+	# location
+	for l in /usr/share/zoneinfo/*; do
+		[ -d $l ] || continue
+		l=${l##*/}
+		case $l in
+			Etc|posix|right) continue;;
+		esac
+		listloc="$listloc $l"
+	done
+	while [ ! "$location" ]; do
+		clear
+		count=0
+		for l in $listloc; do
+			count=$((count+1))
+			echo "[$count] $l"
+		done
+		read -p "Enter location [1-$count]: " input
+		[ "$input" = 0 ] && continue
+		[ "$input" -gt "$count" ] && continue
+		location=$(echo $listloc | tr ' ' '\n' | head -n$input | tail -n1)
+	done
+	# country
+	for c in /usr/share/zoneinfo/$location/*; do
+		c=${c##*/}
+		listc="$listc $c"
+	done
+	while [ ! "$countrypart" ]; do
+		clear
+		read -p "Enter part of your country name (Eg: us,Paris): " input
+		countrypart=$(echo $listc | tr ' ' '\n' | grep -i $input)
+	done
+	while [ ! "$country" ]; do
+		clear
+		count=0
+		for c in $countrypart; do
+			count=$((count+1))
+			echo "[$count] $c"
+		done
+		read -p "Enter country [1-$count]: " input
+		[ "$input" = 0 ] && continue
+		[ "$input" -gt "$count" ] && continue
+		country=$(echo $countrypart | tr ' ' '\n' | head -n$input | tail -n1)
+	done
+	TIMEZONE=$location/$country
+}
+
 stage_selection() {
     INVALID_CHOICE=1
 
@@ -159,3 +208,6 @@ clear
 root_part_selection
 clear
 uefi_part_selection
+clear
+timezone
+clear
