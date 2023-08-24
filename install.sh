@@ -79,7 +79,8 @@ stage_selection() {
 
         if [ "$CHOICE" == "1" ]; then
             INVALID_CHOICE=0
-
+            FILE=$BASE_FILE
+            STAGE="BASE"
         else
             clear
             INVALID_CHOICE=1
@@ -234,3 +235,43 @@ user_account
 clear
 root_password
 clear
+
+echo "Please wait while the script is doing the install for you :D"
+
+# Mount root partition
+mkfs.ext4 -F $ROOT_PART &> /dev/null
+mount $ROOT_PART /mnt
+
+# Copy stage archive
+cp $FILE /mnt
+
+# Extract stage archive
+cd /mnt
+tar xpf $FILE --xattrs-include='*.*' --numeric-owner
+
+# Mount UEFI partition
+mkfs.vfat $UEFI_PART &> /dev/null
+mkdir -p /mnt/boot/efi
+mount $UEFI_PART /mnt/boot/efi
+
+# Execute installation stuff
+cat << EOF | chroot /mnt
+ln -s /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+grub-install --efi-directory=/boot/efi
+grub-mkconfig -o /boot/grub/grub.cfg
+systemd-machine-id-setup
+useradd -m -G users,wheel,audio,video,input -s /bin/bash $USERNAME
+echo -e "${USER_PASSWORD}\n${USER_PASSWORD}" | passwd -q $USERNAME
+echo -e "${ROOT_PASSWORD}\n${ROOT_PASSWORD}" | passwd -q
+systemctl preset-all --preset-mode=enable-only
+EOF
+
+clear
+
+echo "Installation has finished !"
+echo "Press R to reboot..."
+read REBOOT
+
+if [ "$REBOOT" == "R" ] || [ "$REBOOT" == "r" ]; then
+    reboot
+fi
