@@ -4,6 +4,14 @@
 
 BASE_FILE="cambria-stage4-base.tar.xz"
 
+showkeymap() {
+	if [ -d /usr/share/kbd/keymaps ]; then
+		find /usr/share/kbd/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sort
+	else
+		find /usr/share/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sort
+  	fi
+}
+
 root_password() {
     echo "Root account configuration:"
     echo ""
@@ -153,6 +161,27 @@ uefi_part_selection() {
     fi
 }
 
+config_keymap() {
+	unset KEYMAP keymappart
+	while [ ! "$keymappart" ]; do
+        clear
+		read -p "Enter part of your keymap (Eg: us,fr): " input
+		keymappart=$(showkeymap | grep $input) || true
+	done
+	while [ ! "$KEYMAP" ]; do
+		clear
+		count=0
+		for i in $keymappart; do
+			count=$((count+1))
+			echo "[$count] $i"
+		done
+		read -p "Enter keymap [1-$count]: " input
+		[ "$input" = 0 ] && continue
+		[ "$input" -gt "$count" ] && continue
+		KEYMAP=$(echo $keymappart | tr ' ' '\n' | head -n$input | tail -n1)
+	done
+}
+
 echo "========================================================================"
 echo "                     WELCOME ON CAMBRIA LINUX !                         "
 echo "========================================================================"
@@ -184,6 +213,8 @@ user_account
 clear
 root_password
 clear
+config_keymap
+clear
 
 echo "Please wait while the script is doing the install for you :D"
 
@@ -206,6 +237,9 @@ mount $UEFI_PART /mnt/gentoo/boot/efi
 
 echo "UUID=$(blkid -o value -s UUID "$UEFI_PART") /boot/efi vfat defaults 0 2" >> /mnt/gentoo/etc/fstab
 echo "UUID=$(blkid -o value -s UUID "$ROOT_PART") / $(lsblk -nrp -o FSTYPE $ROOT_PART) defaults 1 1" >> /mnt/gentoo/etc/fstab
+
+# Keymap configuration
+echo "KEYMAP=$KEYMAP" > /mnt/gentoo/etc/vconsole.conf
 
 # Execute installation stuff
 mount --types proc /proc /mnt/gentoo/proc 
