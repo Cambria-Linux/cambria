@@ -204,7 +204,18 @@ mkfs.vfat $UEFI_PART &> /dev/null
 mkdir -p /mnt/gentoo/boot/efi
 mount $UEFI_PART /mnt/gentoo/boot/efi
 
+echo "UUID=$(blkid -o value -s UUID "$UEFI_PART") /boot/efi vfat defaults 0 2" >> /mnt/gentoo/etc/fstab
+echo "UUID=$(blkid -o value -s UUID "$ROOT_PART") / $(lsblk -nrp -o FSTYPE $ROOT_PART) defaults 1 1" >> /mnt/gentoo/etc/fstab
+
 # Execute installation stuff
+mount --types proc /proc /mnt/gentoo/proc 
+mount --rbind /sys /mnt/gentoo/sys 
+mount --make-rslave /mnt/gentoo/sys 
+mount --rbind /dev /mnt/gentoo/dev 
+mount --make-rslave /mnt/gentoo/dev 
+mount --bind /run /mnt/gentoo/run
+mount --make-slave /mnt/gentoo/run
+
 cat << EOF | chroot /mnt/gentoo
 grub-install --efi-directory=/boot/efi
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -215,7 +226,7 @@ echo -e "${ROOT_PASSWORD}\n${ROOT_PASSWORD}" | passwd -q
 systemctl preset-all --preset-mode=enable-only
 EOF
 
-clear
+echo ""
 
 echo "Installation has finished !"
 echo "Press R to reboot..."
