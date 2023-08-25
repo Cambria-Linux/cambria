@@ -189,22 +189,23 @@ echo "Please wait while the script is doing the install for you :D"
 
 # Mount root partition
 mkfs.ext4 -F $ROOT_PART &> /dev/null
-mount $ROOT_PART /mnt
+mkdir -p /mnt/gentoo
+mount $ROOT_PART /mnt/gentoo
 
 # Copy stage archive
-cp $FILE /mnt
+cp $FILE /mnt/gentoo
 
 # Extract stage archive
-cd /mnt
+cd /mnt/gentoo
 tar xpf $FILE --xattrs-include='*.*' --numeric-owner
 
 # Mount UEFI partition
 mkfs.vfat $UEFI_PART &> /dev/null
-mkdir -p /mnt/boot/efi
-mount $UEFI_PART /mnt/boot/efi
+mkdir -p /mnt/gentoo/boot/efi
+mount $UEFI_PART /mnt/gentoo/boot/efi
 
 # Execute installation stuff
-cat << EOF | chroot /mnt
+cat << EOF | chroot /mnt/gentoo
 grub-install --efi-directory=/boot/efi
 grub-mkconfig -o /boot/grub/grub.cfg
 systemd-machine-id-setup
