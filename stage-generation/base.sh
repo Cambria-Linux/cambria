@@ -2,7 +2,7 @@
 # The base stage generation script.
 #===================================================
 
-OUTPUT=cambria-stage4-base.tar.xz
+OUTPUT=cambria-stage4-base
 
 build() {
 	clean
