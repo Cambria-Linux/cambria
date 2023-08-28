@@ -33,6 +33,7 @@ conf_menu() {
 		conf_menu
 	elif [ "$CHOICE" == "3" ]; then
 		read -p "What's the name of your base stage file ? " BASE_STAGE
+		BASE_STAGE=$PWD/$BASE_STAGE
 		clear
 		conf_menu
 	elif [ "$CHOICE" == "?" ]; then
