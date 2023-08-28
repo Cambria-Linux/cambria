@@ -39,7 +39,8 @@ user_account() {
 stage_selection() {
     echo "ARCHIVE SELECTION:"
     i=1
-    for file in /mnt/iso/*.tar.xz; do
+    ARCHIVES=/mnt/iso/*.tar.xz
+    for file in $ARCHIVES; do
         echo "[$i] $file"
         i=$((i+1))
     done
@@ -217,6 +218,7 @@ clear
 stage_selection
 clear
 disk_selection
+cfdisk $DISK
 clear
 root_part_selection
 clear
