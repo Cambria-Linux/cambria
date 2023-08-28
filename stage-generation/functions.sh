@@ -16,13 +16,20 @@ extract_stage() {
 
 configure_portage() {
 	if [ "$PARALLEL_BUILD" == "1" ]; then
+		sed -i "/EMERGE_DEFAULT_OPTS/d" etc/portage/make.conf
 		echo "EMERGE_DEFAULT_OPTS=\"--jobs $PARALLEL_JOBS\"" >>etc/portage/make.conf
 	fi
+	sed -i "/INPUT_DEVICES/d" etc/portage/make.conf
 	echo "INPUT_DEVICES=\"libinput keyboard mouse\"" >>etc/portage/make.conf
+	sed -i "/VIDEO_CARDS/d" etc/portage/make.conf
 	echo "VIDEO_CARDS=\"amdgpu i915 i965 nouveau nvidia osmesa r100 r200 radeonsi radeon swrast virgl\"" >>etc/portage/make.conf
+	sed -i "/FEATURES/d" etc/portage/make.conf
 	echo "FEATURES=\"parallel-fetch noinfo nodoc parallel-install candy unmerge-orphans\"" >>etc/portage/make.conf
+	sed -i "/USE/d" etc/portage/make.conf
 	echo "USE=\"$USEFLAGS\"" >>etc/portage/make.conf
+	sed -i "/MAKEOPTS/d" etc/portage/make.conf
 	echo "MAKEOPTS=\"$MAKEOPTS\"" >>etc/portage/make.conf
+	sed -i "/ACCEPT_LICENSE/d" myfile
 	echo "ACCEPT_LICENSE=\"*\"" >>etc/portage/make.conf
 }
 
