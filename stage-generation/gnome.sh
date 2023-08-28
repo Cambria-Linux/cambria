@@ -2,13 +2,20 @@
 # The gnome stage generation script.
 #===================================================
 
+<<<<<<< HEAD
 STAGE="GNOME"
+=======
+>>>>>>> 029b1b8 (feat : add gnome stage script and user dirs)
 OUTPUT=cambria-gnome
 
 build() {
 	clean
 
+<<<<<<< HEAD
 	if [ -z $BASE_STAGE ]; then
+=======
+	if [ -n $BASE_STAGE ]; then
+>>>>>>> 029b1b8 (feat : add gnome stage script and user dirs)
 		print_err "No stage3 provided, exiting..."
 		exit 1
 	fi
@@ -18,7 +25,11 @@ build() {
 	print_success "Done !"
 
 	print_info "Writing portage configuration..."
+<<<<<<< HEAD
 	USEFLAGS="-kde gtk egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
+=======
+	USEFLAGS="gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
+>>>>>>> 029b1b8 (feat : add gnome stage script and user dirs)
 	print_success "Done !"
 
 	print_info "Setting DNS info..."
@@ -31,6 +42,7 @@ build() {
 emerge-webrsync
 
 emerge --sync --quiet
+<<<<<<< HEAD
 
 EOF
 
@@ -64,5 +76,11 @@ EOF
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 EOF
 
+=======
+emerge -quDN @world
+EOF
+	install_packages gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog 
+	enable_services gdm NetworkManager bluetooth avahi cups
+>>>>>>> 029b1b8 (feat : add gnome stage script and user dirs)
     unmount_chroot
 }
