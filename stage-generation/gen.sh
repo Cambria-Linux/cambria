@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #===================================================
 # All-in-one script to generate stages.
 #===================================================
@@ -27,27 +29,72 @@ conf_menu() {
         echo "PARALLEL_BUILD=$PARALLEL_BUILD"
         sleep 3
         clear
-        menu
+        stage_menu
     else
         clear
-        menu
+        stage_menu
     fi
 }
 
 menu() {
     echo "====================================================================="
-    echo "                   CAMBRIA STAGE GENERATION TOOL                     "
+    echo "                   CAMBRIA GENERATION TOOL                           "
     echo "====================================================================="
     echo ""
     echo "[1] BASE"
+    echo ""
+    read -p "Enter your choice: " CHOICE
+
+    if [ "$CHOICE" == "1" ]; then
+        source stage-generation/base.sh
+    else
+        INVALID_ANSWER=1
+        menu
+    fi
+
+    if [ "$INVALID_ANSWER" == "1" ]; then
+        menu
+    else
+        clear
+        tool_menu
+    fi
+}
+
+tool_menu() {
+    echo "====================================================================="
+    echo "                   CAMBRIA GENERATION TOOL                           "
+    echo "====================================================================="
+    echo ""
+    echo "[S] Stage Generation"
+    echo "[I] ISO Generation"
+    echo ""
+    read -p "Enter your choice: " CHOICE
+
+    if [ "$CHOICE" == "S" ] || [ "$CHOICE" == "s" ]; then
+        stage_menu
+    elif [ "$CHOICE" == "I" ] || [ "$CHOICE" == "i" ]; then
+        gen_iso
+    else
+        tool_menu
+    fi
+}
+
+stage_menu() {
+    echo "====================================================================="
+    echo "                   CAMBRIA STAGE GENERATION TOOL                     "
+    echo "====================================================================="
+    echo ""
+    echo "[1] Launch build"
     echo ""
     echo "[C] Configuration"
     echo ""
     read -p "Enter your choice: " CHOICE
 
     if [ "$CHOICE" == "1" ]; then
-        source stage-generation/base.sh
         build
+        clean_cache
+        clean_dev
+        compress_build
     elif [ "$CHOICE" == "c" ] || [ "$CHOICE" == "C" ]; then
         clear
         conf_menu
@@ -58,6 +105,3 @@ menu() {
 }
 
 menu
-clean_cache
-clean_dev
-compress_build
