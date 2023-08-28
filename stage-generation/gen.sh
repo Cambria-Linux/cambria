@@ -17,6 +17,8 @@ conf_menu() {
 	echo "====================================================================="
 	echo ""
 	echo "[1] Enable parallel builds"
+	echo "[2] MAKEOPTS configuration"
+	echo "[3] Base stage choice"
 	echo "[?] Show current configuration"
 	echo ""
 	read -p "Enter your choice: " CHOICE
@@ -25,8 +27,19 @@ conf_menu() {
 		read -p "How many build jobs do you want ? " PARALLEL_JOBS
 		clear
 		conf_menu
+	elif [ "$CHOICE" == "2" ]; then
+		read -p "Please enter your MAKEOPTS: " MAKEOPTS
+		clear
+		conf_menu
+	elif [ "$CHOICE" == "3" ]; then
+		read -p "What's the name of your base stage file ? " BASE_STAGE
+		clear
+		conf_menu
 	elif [ "$CHOICE" == "?" ]; then
 		echo "PARALLEL_BUILD=$PARALLEL_BUILD"
+		echo "PARALLEL_JOBS=$PARALLEL_JOBS"
+		echo "MAKEOPTS=$MAKEOPTS"
+		echo "BASE_STAGE=$BASE_STAGE"
 		sleep 3
 		clear
 		stage_menu
