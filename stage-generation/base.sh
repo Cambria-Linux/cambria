@@ -4,6 +4,9 @@
 
 # Extract stage 3
 
+STAGE="BASE"
+OUTPUT=cambria-stage4-base.tar.xz
+
 build() {
     clean
 
