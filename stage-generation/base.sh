@@ -2,21 +2,18 @@
 # The base stage generation script.
 #===================================================
 
-# Extract stage 3
-
-STAGE="BASE"
 OUTPUT=cambria-stage4-base.tar.xz
 
 build() {
 	clean
 
-	if [ "$STAGE3" == "" ]; then
+	if [ -n $BASE_STAGE ]; then
 		print_err "No stage3 provided, exiting..."
 		exit 1
 	fi
 
-	print_info "Extracting stage 3..."
-	extract_stage $STAGE3
+	print_info "Extracting base stage..."
+	extract_stage $BASE_STAGE
 	print_success "Done !"
 
 	print_info "Writing portage configuration..."
