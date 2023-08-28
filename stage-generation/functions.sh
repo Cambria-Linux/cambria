@@ -26,6 +26,12 @@ configure_portage() {
     echo "ACCEPT_LICENSE=\"*\"" >> etc/portage/make.conf
 }
 
+enable_services() {
+    cat << EOF | chroot .
+systemctl enable $@
+EOF
+}
+
 set_dns() {
     cp --dereference /etc/resolv.conf etc/
 }
