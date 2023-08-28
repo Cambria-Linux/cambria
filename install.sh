@@ -274,6 +274,7 @@ useradd -m -G users,wheel,audio,video,input -s /bin/bash $USERNAME
 echo -e "${USER_PASSWORD}\n${USER_PASSWORD}" | passwd -q $USERNAME
 echo -e "${ROOT_PASSWORD}\n${ROOT_PASSWORD}" | passwd -q
 systemctl preset-all --preset-mode=enable-only
+xdg-user-dirs-update
 EOF
 
 rm /mnt/gentoo/$(basename $FILE)
