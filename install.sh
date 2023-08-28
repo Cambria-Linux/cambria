@@ -4,7 +4,14 @@
 # Cambria Linux install script
 #===================================================
 
-BASE_FILE="cambria-stage4-base.tar.xz"
+mount_iso() {
+    mkdir -p /mnt/iso
+    if [ -b /dev/mapper/ventoy ]; then
+        mount /dev/mapper/ventoy /mnt/iso
+    elif [ -b /dev/disk/by-label/CAMBRIA* ]; then
+        mount /dev/disk/by-label/CAMBRIA*
+    fi
+}
 
 showkeymap() {
 	if [ -d /usr/share/kbd/keymaps ]; then
@@ -30,23 +37,26 @@ user_account() {
 }
 
 stage_selection() {
-    INVALID_CHOICE=1
-
-    while [ "$INVALID_CHOICE" == "1" ]; do
-        echo "SYSTEM SELECTION:"
-        echo "[1] BASE"
-        echo ""
-        read -p "Your choice: " CHOICE
-
-        if [ "$CHOICE" == "1" ]; then
-            INVALID_CHOICE=0
-            FILE=$BASE_FILE
-            STAGE="BASE"
-        else
-            clear
-            INVALID_CHOICE=1
-        fi
+    echo "ARCHIVE SELECTION:"
+    i=1
+    for file in /mnt/iso/*.tar.xz; do
+        echo "[$i] $file"
+        i=$((i+1))
     done
+    echo ""
+    read -p "Your choice: " CHOICE
+
+    for file in /mnt/iso/*.tar.xz; do
+        if [ "$CHOICE" == "$i" ]; then
+            FILE=$file
+        fi
+        i=$((i+1))
+    done
+
+    if [ -z $FILE ]; then
+        clear
+        stage_selection
+    fi
 }
 
 disk_selection() {
@@ -202,6 +212,7 @@ fi
 
 echo ""
 
+mount_iso
 clear
 stage_selection
 clear
