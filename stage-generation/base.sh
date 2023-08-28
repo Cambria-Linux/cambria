@@ -32,6 +32,6 @@ emerge-webrsync
 emerge --sync --quiet
 emerge -quDN @world
 EOF
-    install_packages linux-firmware gentoo-kernel-bin grub cpuid2cpuflags genfstab sys-apps/mlocate genlop eix eselect-repository neofetch bash-completion chrony sys-fs/dosfstools display-manager-init net-misc/dhcpcd net-wireless/iwd
+    install_packages linux-firmware gentoo-kernel-bin grub cpuid2cpuflags sys-apps/mlocate genlop eix eselect-repository neofetch bash-completion chrony sys-fs/dosfstools net-misc/dhcpcd net-wireless/iwd
     unmount_chroot
 }
