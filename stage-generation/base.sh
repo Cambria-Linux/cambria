@@ -17,7 +17,7 @@ build() {
     print_success "Done !"
 
     print_info "Writing portage configuration..."
-    USEFLAGS="x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland" configure_portage
+    USEFLAGS="x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
     print_success "Done !"
 
     print_info "Setting DNS info..."
