@@ -7,7 +7,7 @@ OUTPUT=cambria-gnome
 build() {
 	clean
 
-	if [ -n $BASE_STAGE ]; then
+	if [ -z $BASE_STAGE ]; then
 		print_err "No stage3 provided, exiting..."
 		exit 1
 	fi
