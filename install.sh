@@ -9,7 +9,7 @@ mount_iso() {
     if [ -b /dev/mapper/ventoy ]; then
         mount /dev/mapper/ventoy /mnt/iso
     elif [ -b /dev/disk/by-label/CAMBRIA* ]; then
-        mount /dev/disk/by-label/CAMBRIA*
+        mount /dev/disk/by-label/CAMBRIA* /mnt/iso
     fi
 }
 
