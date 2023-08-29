@@ -157,7 +157,7 @@ menuentry 'Boot LiveCD (cached)' --class gnu-linux --class os {
         initrd /boot/gentoo.igz
 }
 EOF
-		cp $OUTPUT newiso/
+		cp $OUTPUT.tar.xz newiso/
 		cp image.squashfs newiso/
 		mkisofs -o cambria-$STAGE.iso -R -J -v -d -N -x cambria-$STAGE.iso -hide-rr-moved -no-emul-boot -eltorito-platform efi -eltorito-boot efi/esp.img -V "CAMBRIA$STAGE" -A "Cambria $STAGE" newiso/
 
