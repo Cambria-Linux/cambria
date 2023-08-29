@@ -18,7 +18,7 @@ build() {
 	print_success "Done !"
 
 	print_info "Writing portage configuration..."
-	USEFLAGS="-kde gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
+	USEFLAGS="-kde gtk gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
 	print_success "Done !"
 
 	print_info "Setting DNS info..."
@@ -38,8 +38,9 @@ EOF
     echo "x11-libs/libdrm ~amd64" >>etc/portage/package.accept_keywords/libdrm
     echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
     echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
+	
 
-	install_packages gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog 
+	install_packages gnome-browser-connector gnome-tweaks gnome-extra/mousetweaks evince gnome-contacts totem gnome-keyring gedit gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog 
 	enable_services gdm NetworkManager bluetooth avahi-daemon cups
     unmount_chroot
 }
