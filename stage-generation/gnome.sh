@@ -38,7 +38,7 @@ EOF
     echo "x11-libs/libdrm ~amd64" >>etc/portage/package.accept_keywords/libdrm
     echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
     echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
-	
+	echo "media-libs/libmediaart gtk introspection" >>etc/portage/package.use/libmediaart
 
 	install_packages gnome-browser-connector gnome-tweaks gnome-extra/mousetweaks evince gnome-contacts totem gnome-keyring gedit gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog 
 	enable_services gdm NetworkManager bluetooth avahi-daemon cups
