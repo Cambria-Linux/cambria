@@ -2,6 +2,7 @@
 # The gnome stage generation script.
 #===================================================
 
+STAGE="GNOME"
 OUTPUT=cambria-gnome
 
 build() {
@@ -39,6 +40,6 @@ EOF
     echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
 
 	install_packages gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog 
-	enable_services gdm NetworkManager bluetooth avahi cups
+	enable_services gdm NetworkManager bluetooth avahi-daemon cups
     unmount_chroot
 }
