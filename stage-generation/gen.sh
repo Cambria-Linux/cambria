@@ -11,6 +11,14 @@ if [ "$UID" != "0" ]; then
 	exit 1
 fi
 
+if [ ! -f /usr/bin/gum ]; then
+	wget https://github.com/charmbracelet/gum/releases/download/v0.11.0/gum_0.11.0_Linux_x86_64.tar.gz
+	tar -xf gum_*.tar.gz gum
+	cp gum /usr/bin/gum
+	rm gum*
+	clear
+fi
+
 print_choices() {
 	for c in $1; do
 		echo $C
