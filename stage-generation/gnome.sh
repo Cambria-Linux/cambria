@@ -39,8 +39,7 @@ EOF
     echo "gui-apps/gnome-console ~amd64" >>etc/portage/package.accept_keywords/gnome-console
     echo "x11-libs/libdrm ~amd64" >>etc/portage/package.accept_keywords/libdrm
 	echo "gnome-extra/gnome-software ~amd64" >>etc/portage/package.accept_keywords/gnome-software
-	echo "net-im/discord ~amd64" >>etc/portage/package.accept_keywords/discord
-	
+		
     echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
     echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
 	echo "media-libs/libmediaart -gtk" >>etc/portage/package.use/libmediaart
@@ -52,12 +51,14 @@ EOF
 	echo "media-plugins/grilo-plugins tracker" >>etc/portage/package.use/grilo-plugins
 	echo "gnome-extra/gnome-software flatpak" >>etc/portage/package.use/gnome-software
 	echo "net-dns/avahi -gtk -qt5" >>etc/portage/package.use/avahi
+	echo "net-wireless/wpa_supplicant -qt5" >>etc/portage/package.use/wpa_supplicant
+	echo "app-text/mupdf -opengl -X" >>etc/portage/package.use/mupdf
 
 	cat <<EOF | chroot .
 emerge -quDN @world
 EOF
 
-	install_packages discord media-fonts/noto-emoji gnome-software sys-apps/flatpak gnome-browser-connector gnome-tweaks gnome-extra/mousetweaks evince gnome-contacts totem gnome-keyring gnome-text-editor gnome-calendar gnome-maps gnome-weather gnome-music cheese baobab gnome-disk-utility gnome-photos gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog 
+	install_packages media-fonts/noto-emoji gnome-software sys-apps/flatpak gnome-browser-connector gnome-tweaks gnome-extra/mousetweaks evince gnome-contacts totem gnome-keyring gnome-text-editor gnome-calendar gnome-maps gnome-weather gnome-music cheese baobab gnome-disk-utility gnome-photos gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog 
 	enable_services gdm NetworkManager bluetooth avahi-daemon cups
 
 	cat <<EOF | chroot .
