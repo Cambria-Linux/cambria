@@ -66,8 +66,9 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 EOF
 
 	mkdir -p usr/share/backgrounds/gnome/
-	cp ../images/background1.png usr/share/backgrounds/gnome/cambria_01.png
 	mkdir -p etc/dconf/db/local.d
+	cp ../images/background1.png usr/share/backgrounds/gnome/cambria_01.png
+	
 	cat > etc/dconf/db/local.d/00-background<< EOF
 # Specify the dconf path
 [org/gnome/desktop/background]
@@ -83,6 +84,15 @@ primary-color='000000'
 
 # Specify the right or bottom color when drawing gradients
 secondary-color='FFFFFF'
+EOF
+
+	mkdir -p etc/dconf/db/gdm.d
+	mkdir -p usr/share/pixmaps
+	cp ../images/cambria.png usr/share/pixmaps/cambria-logo.png
+	
+	cat > etc/dconf/db/gdm.d/01-logo<< EOF
+[org/gnome/login-screen]
+  logo='/usr/share/pixmaps/cambria-logo.png'
 EOF
 
     unmount_chroot
