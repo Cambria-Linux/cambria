@@ -83,17 +83,14 @@ tool_menu() {
 	echo "                   CAMBRIA GENERATION TOOL                           "
 	echo "====================================================================="
 	echo ""
-	echo "[S] Stage Generation"
-	echo "[I] ISO Generation"
-	echo ""
-	read -p "Enter your choice: " CHOICE
+	gum_menu "Stage Generation" "ISO Generation"
 
-	if [ "$CHOICE" == "S" ] || [ "$CHOICE" == "s" ]; then
+	if [[ "$CHOICE" == "[1]"* ]]; then
+		clear
 		stage_menu
-	elif [ "$CHOICE" == "I" ] || [ "$CHOICE" == "i" ]; then
+	elif [[ "$CHOICE" == "[2]"* ]]; then
+		clear
 		gen_iso
-	else
-		tool_menu
 	fi
 }
 
