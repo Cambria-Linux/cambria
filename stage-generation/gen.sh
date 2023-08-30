@@ -82,6 +82,10 @@ menu() {
 		source stage-generation/base.sh
 	fi
 
+	if [ -z $CHOICE ]; then
+		exit
+	fi
+	
 	clear
 	tool_menu
 }
