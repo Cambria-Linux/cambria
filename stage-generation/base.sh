@@ -33,6 +33,13 @@ emerge --sync --quiet
 emerge -quDN @world
 EOF
 	install_packages linux-firmware gentoo-kernel-bin grub cpuid2cpuflags sys-apps/mlocate genlop eix eselect-repository bash-completion sys-fs/dosfstools dev-vcs/git net-misc/dhcpcd net-wireless/iwd
+	cat <<EOF | chroot .
+eselect repository remove gentoo
+eselect repository add gentoo git https://github.com/gentoo-mirror/gentoo.git
+rm -r /var/db/repos/gentoo
+eix-sync
+eix-update
+EOF
 	unmount_chroot
 	wget https://raw.githubusercontent.com/Cambria-Linux/hyfetch/master/neofetch
 	mv neofetch usr/bin/neofetch
