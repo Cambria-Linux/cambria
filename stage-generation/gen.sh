@@ -17,17 +17,24 @@ print_choices() {
 	done
 }
 
+gum_menu() {
+	i=1
+	CHOICES=()
+	for choice in "$@"; do
+		CHOICES+=("[$i] $choice")
+		i=$((i + 1))
+	done
+	CHOICE=$(printf '%s\n' "${CHOICES[@]}" | gum choose)
+}
+
 conf_menu() {
 	echo "====================================================================="
 	echo "                         CONFIGURATION                               "
 	echo "====================================================================="
 	echo ""
-	CHOICES=("[1] Emerge jobs")
-	CHOICES+=("[2] Build jobs")
-	CHOICES+=("[3] Base stage choice")
-	CHOICES+=("[4] Show current configuration")
-	echo ""
-	CHOICE=$(printf '%s\n' "${CHOICES[@]}" | gum choose)
+	
+	gum_menu "Emerge jobs" "Build jobs" "Base stage choice" "Show current configuration"
+
 	if [[ "$CHOICE" == "[1]"* ]]; then
 		PARALLEL_BUILD=1
 		PARALLEL_JOBS=$(eval "gum choose {1..$(lscpu --all --parse=CORE,SOCKET | grep -Ev "^#" | sort -u | wc -l)}")
