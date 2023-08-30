@@ -175,7 +175,7 @@ EOF
 		mkdir newiso
 		cp -r iso/* newiso/
 		rm -rf newiso/*.tar.xz
-		cp $OUTPUT newiso/
+		cp $OUTPUT.tar.xz newiso/
 		mkisofs -o cambria-$STAGE.iso -R -J -v -d -N -x cambria-$STAGE.iso -hide-rr-moved -no-emul-boot -eltorito-platform efi -eltorito-boot efi/esp.img -V "CAMBRIA$STAGE" -A "Cambria $STAGE" newiso/
 		print_success "Done !"
 		print_info "Cleaning up..."
