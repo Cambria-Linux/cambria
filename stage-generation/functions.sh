@@ -28,7 +28,7 @@ configure_portage() {
 	sed -i "/USE/d" etc/portage/make.conf
 	echo "USE=\"$USEFLAGS\"" >>etc/portage/make.conf
 	sed -i "/MAKEOPTS/d" etc/portage/make.conf
-	echo "MAKEOPTS=\"$MAKEOPTS\"" >>etc/portage/make.conf
+	echo "MAKEOPTS=\"-j$MAKEJOBS\"" >>etc/portage/make.conf
 	sed -i "/ACCEPT_LICENSE/d" etc/portage/make.conf
 	echo "ACCEPT_LICENSE=\"*\"" >>etc/portage/make.conf
 }
