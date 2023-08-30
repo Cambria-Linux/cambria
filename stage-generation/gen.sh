@@ -99,23 +99,17 @@ stage_menu() {
 	echo "                   CAMBRIA STAGE GENERATION TOOL                     "
 	echo "====================================================================="
 	echo ""
-	echo "[1] Launch build"
-	echo ""
-	echo "[C] Configuration"
-	echo ""
-	read -p "Enter your choice: " CHOICE
+	gum_menu "Launch build" "Configuration"
 
-	if [ "$CHOICE" == "1" ]; then
+	if [[ "$CHOICE" == "[1]"* ]]; then
+		clear
 		build
 		clean_cache
 		clean_dev
 		compress_build
-	elif [ "$CHOICE" == "c" ] || [ "$CHOICE" == "C" ]; then
+	elif [[ "$CHOICE" == "[2]"* ]]; then
 		clear
 		conf_menu
-	else
-		echo "Invalid choice. Exiting..."
-		exit 1
 	fi
 }
 
