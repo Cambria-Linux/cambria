@@ -63,30 +63,19 @@ conf_menu() {
 	exit
 }
 
-menu() {
-	INVALID_ANSWER=0
-	
+menu() {	
 	echo "====================================================================="
 	echo "                   CAMBRIA GENERATION TOOL                           "
 	echo "====================================================================="
 	echo ""
-	echo "[1] BASE"
-	echo ""
-	read -p "Enter your choice: " CHOICE
+	gum_menu "BASE"
 
-	if [ "$CHOICE" == "1" ]; then
+	if [[ "$CHOICE" == "[1]"* ]]; then
 		source stage-generation/base.sh
-	else
-		INVALID_ANSWER=1
-		menu
 	fi
 
-	if [ "$INVALID_ANSWER" == "1" ]; then
-		menu
-	else
-		clear
-		tool_menu
-	fi
+	clear
+	tool_menu
 }
 
 tool_menu() {
