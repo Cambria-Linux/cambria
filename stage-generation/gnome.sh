@@ -36,12 +36,12 @@ EOF
 
 	echo "gnome-extra/evolution-data-server ~amd64" >>etc/portage/package.accept_keywords/evolution-data-server
 	echo "media-gfx/gnome-photos ~amd64" >>etc/portage/package.accept_keywords/gnome-photos
-    echo "gui-apps/gnome-console ~amd64" >>etc/portage/package.accept_keywords/gnome-console
-    echo "x11-libs/libdrm ~amd64" >>etc/portage/package.accept_keywords/libdrm
+	echo "gui-apps/gnome-console ~amd64" >>etc/portage/package.accept_keywords/gnome-console
+	echo "x11-libs/libdrm ~amd64" >>etc/portage/package.accept_keywords/libdrm
 	echo "gnome-extra/gnome-software ~amd64" >>etc/portage/package.accept_keywords/gnome-software
-		
-    echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
-    echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
+
+	echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
+	echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
 	echo "media-libs/libmediaart -gtk" >>etc/portage/package.use/libmediaart
 	echo "dev-libs/folks eds" >>etc/portage/package.use/folks
 	echo "gnome-extra/evolution-data-server vala" >>etc/portage/package.use/evolution-data-server
