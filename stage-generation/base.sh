@@ -46,4 +46,11 @@ EOF
 	wget https://raw.githubusercontent.com/Cambria-Linux/hyfetch/master/neofetch
 	mv neofetch usr/bin/neofetch
 	chmod +x usr/bin/neofetch
+	cat <<EOF > etc/os-release
+NAME=Cambria
+ID=cambria
+PRETTY_NAME="Cambria Linux"
+HOME_URL="https://cambria-linux.github.io/"
+VERSION_ID="1.0"
+EOF
 }
