@@ -37,8 +37,8 @@ EOF
 eselect repository remove gentoo
 eselect repository add gentoo git https://github.com/gentoo-mirror/gentoo.git
 rm -r /var/db/repos/gentoo
-eix-sync
-eix-update
+eix-sync -q
+eix-update -q
 EOF
 	unmount_chroot
 	wget https://raw.githubusercontent.com/Cambria-Linux/hyfetch/master/neofetch
