@@ -47,6 +47,10 @@ EOF
 	wget https://raw.githubusercontent.com/Cambria-Linux/hyfetch/master/neofetch
 	mv neofetch usr/bin/neofetch
 	chmod +x usr/bin/neofetch
+
+	cp ../assets/ascii_logo usr/share/ascii_logo
+	echo "alias=\"neofetch --source /usr/share/ascii_logo --ascii_colors 1 11 --colors 9 7 9 9 9 7\"" >>etc/bash/bashrc
+
 	cat <<EOF > etc/os-release
 NAME=Cambria
 ID=cambria
