@@ -58,4 +58,9 @@ PRETTY_NAME="Cambria Linux"
 HOME_URL="https://cambria-linux.github.io/"
 VERSION_ID="1.0"
 EOF
+
+	wget https://github.com/charmbracelet/gum/releases/download/v0.11.0/gum_0.11.0_Linux_x86_64.tar.gz
+	tar -xf gum_*.tar.gz gum
+	cp gum usr/bin/gum
+	rm gum*
 }
