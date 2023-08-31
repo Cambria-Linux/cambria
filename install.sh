@@ -4,6 +4,17 @@
 # Cambria Linux install script
 #===================================================
 
+
+# Check if gum is installed
+if [ ! -f /usr/bin/gum ]; then
+    wget https://github.com/charmbracelet/gum/releases/download/v0.11.0/gum_0.11.0_Linux_x86_64.tar.gz
+    tar -xf gum_*.tar.gz gum
+    cp gum /usr/bin/gum
+    rm gum*
+    clear
+fi
+
+
 mount_iso() {
 	mkdir -p /mnt/iso
 	if [ -b /dev/mapper/ventoy ]; then
