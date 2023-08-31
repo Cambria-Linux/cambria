@@ -32,7 +32,7 @@ set_dns() {
 
 install_packages() {
     cat << EOF | chroot .
-emerge -q $@
+emerge -q  --selective=y $@ --autounmask-write
 EOF
 }
 
