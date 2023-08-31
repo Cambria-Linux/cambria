@@ -62,46 +62,12 @@ uefi_part_selection() {
 	parts=$(ls $DISK* | grep "$DISK.*")
 	echo "UEFI partition selection:"
 	echo ""
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
+    UEFI_PART=gum choose --header="Select the efi partiton: (/boot/efi)" $parts)
 
-		if [ "$part" == "$ROOT_PART" ]; then
-			continue
-		fi
-
-		echo "[$i] $part"
-		i=$((i + 1))
-	done
-
-	echo ""
-	read -p "Your choice: " CHOICE
-
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		if [ "$part" == "$ROOT_PART" ]; then
-			continue
-		fi
-
-		if [ "$i" == "$CHOICE" ]; then
-			UEFI_PART=$part
-		fi
-
-		i=$((i + 1))
-	done
-
-	if [ "$UEFI_PART" == "" ]; then
-		clear
-		uefi_part_selection
-	fi
+    if [ "$UEFI_PART" == "$ROOT_PART" ]; then
+        echo "UEFI partition can't be the same as the root partition!"
+        uefi_part_selection
+    fi
 }
 
 swap_part_selection() {
