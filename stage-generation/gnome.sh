@@ -65,35 +65,5 @@ EOF
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 EOF
 
-	mkdir -p usr/share/backgrounds/gnome/
-	mkdir -p etc/dconf/db/local.d
-	cp ../images/background1.png usr/share/backgrounds/gnome/cambria_01.png
-	
-	cat > etc/dconf/db/local.d/00-background<< EOF
-# Specify the dconf path
-[org/gnome/desktop/background]
-
-# Specify the path to the desktop background image file
-picture-uri='file:///usr/share/backgrounds/gnome/cambria_01.png'
-
-# Specify one of the rendering options for the background image:
-picture-options='zoom'
-
-# Specify the left or top color when drawing gradients, or the solid color
-primary-color='000000'
-
-# Specify the right or bottom color when drawing gradients
-secondary-color='FFFFFF'
-EOF
-
-	mkdir -p etc/dconf/db/gdm.d
-	mkdir -p usr/share/pixmaps
-	cp ../images/cambria.png usr/share/pixmaps/cambria-logo.png
-	
-	cat > etc/dconf/db/gdm.d/01-logo<< EOF
-[org/gnome/login-screen]
-  logo='/usr/share/pixmaps/cambria-logo.png'
-EOF
-
     unmount_chroot
 }
