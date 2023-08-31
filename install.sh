@@ -63,37 +63,7 @@ root_part_selection() {
 	parts=$(ls $DISK* | grep "$DISK.*")
 	echo "Root partition selection:"
 	echo ""
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		echo "[$i] $part"
-		i=$((i + 1))
-	done
-
-	echo ""
-	read -p "Your choice: " CHOICE
-
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		if [ "$i" == "$CHOICE" ]; then
-			ROOT_PART=$part
-		fi
-		i=$((i + 1))
-	done
-
-	if [ "$ROOT_PART" == "" ]; then
-		clear
-		root_part_selection
-	fi
+    ROOT_PART=$(gum choose --header="Select the root partition: (/)" $parts)
 }
 
 uefi_part_selection() {
