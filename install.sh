@@ -41,9 +41,8 @@ root_password() {
 user_account() {
 	echo "User account creation: "
 	echo ""
-	read -p "What will be your username ? " USERNAME
-	printf "What will be your password (input is hidden) ? "
-	read -s USER_PASSWORD
+    USERNAME=$(gum input --placehoder="Enter username")
+    USER_PASSWORD=$(gum input --password --placeholder "Enter $USERNAME's password")
 }
 
 stage_selection() {
