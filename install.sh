@@ -35,8 +35,7 @@ showkeymap() {
 root_password() {
 	echo "Root account configuration:"
 	echo ""
-	printf "What will be the root account password ? (input is hidden) "
-	read -s ROOT_PASSWORD
+	ROOT_PASSWORD=$(gum input --password --placeholder="Enter root password")
 }
 
 user_account() {
