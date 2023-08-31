@@ -3,6 +3,7 @@
 #===================================================
 
 OUTPUT=cambria-stage4-base
+STAGE=BASE
 
 build() {
 	clean
