@@ -169,6 +169,8 @@ clear
 config_keymap
 clear
 
+gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || echo "Installation aborted, exiting."; exit
+
 echo "Please wait while the script is doing the install for you :D"
 
 # Mount root partition
