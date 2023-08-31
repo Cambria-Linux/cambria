@@ -109,11 +109,7 @@ echo ""
 echo "Let's start !"
 echo ""
 
-read -p "Ready ? (Y/N) " READY
-
-if [ "$READY" != "Y" ] && [ "$READY" != "y" ]; then
-	exit
-fi
+gum confirm "Ready?" || echo "See you next time!"; exit
 
 echo ""
 
