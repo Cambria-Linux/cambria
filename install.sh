@@ -276,7 +276,7 @@ echo -e "${ROOT_PASSWORD}\n${ROOT_PASSWORD}" | passwd -q
 systemctl preset-all --preset-mode=enable-only
 EOF
 
-rm /mnt/gentoo/$FILE
+rm /mnt/gentoo/$(basename $FILE)
 
 echo ""
 
