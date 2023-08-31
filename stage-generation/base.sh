@@ -37,6 +37,7 @@ EOF
 	enable_services dhcpcd iwd
 	cat <<EOF | chroot .
 eselect repository remove gentoo
+rm -f /etc/portage/repos.conf/eselect-repo.conf
 eselect repository add gentoo git https://github.com/gentoo-mirror/gentoo.git
 rm -r /var/db/repos/gentoo
 eix-sync -q
