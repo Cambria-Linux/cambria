@@ -46,27 +46,9 @@ stage_selection() {
 
 disk_selection() {
 	echo "Disk selection:"
-	i=1
-	for disk in $(lsblk -dp | grep -o '^/dev[^ ]*'); do
-		echo "[$i] $disk"
-		i=$((i + 1))
-	done
-
 	echo ""
-	read -p "Your choice: " CHOICE
-
-	i=1
-	for disk in $(lsblk -dp | grep -o '^/dev[^ ]*'); do
-		if [ "$i" == "$CHOICE" ]; then
-			DISK=$disk
-		fi
-		i=$((i + 1))
-	done
-
-	if [ "$DISK" == "" ]; then
-		clear
-		disk_selection
-	fi
+    disks=$(lsblk -dp | grep -o '^/dev[^ ]*')
+    DISK=$(gum choose --header="Select the disk to install Cambria into:" $disks)
 }
 
 root_part_selection() {
