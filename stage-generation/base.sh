@@ -52,7 +52,7 @@ EOF
 	echo "alias=\"neofetch --source /usr/share/ascii_logo --ascii_colors 1 11 --colors 9 7 9 9 9 7\"" >>etc/bash/bashrc
 
 	cat <<EOF > etc/os-release
-NAME=Cambria
+NAME=Gentoo
 ID=cambria
 PRETTY_NAME="Cambria Linux"
 HOME_URL="https://cambria-linux.github.io/"
