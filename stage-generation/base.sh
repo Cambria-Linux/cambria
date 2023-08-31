@@ -34,6 +34,7 @@ emerge --sync --quiet
 emerge -quDN @world
 EOF
 	install_packages linux-firmware gentoo-kernel-bin grub cpuid2cpuflags sys-apps/mlocate genlop eix eselect-repository bash-completion sys-fs/dosfstools dev-vcs/git net-misc/dhcpcd net-wireless/iwd
+	enable_services dhcpcd iwd
 	cat <<EOF | chroot .
 eselect repository remove gentoo
 eselect repository add gentoo git https://github.com/gentoo-mirror/gentoo.git
