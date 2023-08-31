@@ -19,12 +19,6 @@ if [ ! -f /usr/bin/gum ]; then
 	clear
 fi
 
-print_choices() {
-	for c in $1; do
-		echo $C
-	done
-}
-
 gum_menu() {
 	i=1
 	CHOICES=()
