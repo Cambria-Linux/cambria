@@ -38,33 +38,10 @@ user_account() {
 }
 
 stage_selection() {
-	ARCHIVES=/mnt/cdrom/*.tar.xz
-	if [ "${#ARCHIVES[@]}" == "1" ]; then
-		FILE=${ARCHIVES[0]}
-	else
-		echo "ARCHIVE SELECTION:"
-		i=1
-		
-		for file in $ARCHIVES; do
-			echo "[$i] $file"
-			i=$((i + 1))
-		done
-		echo ""
-		read -p "Your choice: " CHOICE
-
-		i=1
-		for file in /mnt/cdrom/*.tar.xz; do
-			if [ "$CHOICE" == "$i" ]; then
-				FILE=$file
-			fi
-			i=$((i + 1))
-		done
-
-		if [ -z $FILE ]; then
-			clear
-			stage_selection
-		fi
-	fi
+	echo "ARCHIVE SELECTION:"
+	echo ""
+	ARCHIVES=/mnt/iso/*.tar.xz
+	FILE=$(gum choose --header="Select the wanted stage:" $ARCHIVES)
 }
 
 disk_selection() {
