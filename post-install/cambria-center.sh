@@ -91,10 +91,10 @@ menu() {
 
 	if [[ "$CHOICE" == "[5]"* ]]; then
 		clear
-		BUILD_JOBS=$(eval "gum choose --header "Select a number of MAKE jobs" {1..$(nproc)}")
+		BUILD_JOBS=$(eval "gum choose --header \"Select a number of MAKE jobs\" {1..$(nproc)}")
 		sed -i "/MAKEOPTS/d" /etc/portage/make.conf
 		echo "MAKEOPTS=\"-j$BUILD_JOBS\"" >>/etc/portage/make.conf
-		EMERGE_JOBS=$(eval "gum choose --header "Select a number of EMERGE jobs" {1..$(lscpu --all --parse=CORE,SOCKET | grep -Ev "^#" | sort -u | wc -l)}")
+		EMERGE_JOBS=$(eval "gum choose --header \"Select a number of EMERGE jobs\" {1..$(lscpu --all --parse=CORE,SOCKET | grep -Ev "^#" | sort -u | wc -l)}")
 		sed -i "/EMERGE_DEFAULT_OPTS/d" /etc/portage/make.conf
 		echo "EMERGE_DEFAULT_OPTS=\"--jobs $EMERGE_JOBS\"" >>/etc/portage/make.conf
 	fi
