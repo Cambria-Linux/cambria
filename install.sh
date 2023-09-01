@@ -135,9 +135,6 @@ uefi_part_selection() {
 		fi
 
 		if [ "$part" == "$ROOT_PART" ]; then
-			if [ "$i" != "1" ]; then
-				i=$((i - 1))
-			fi
 			continue
 		fi
 
@@ -156,9 +153,6 @@ uefi_part_selection() {
 		fi
 
 		if [ "$part" == "$ROOT_PART" ]; then
-			if [ "$i" != "1" ]; then
-				i=$((i - 1))
-			fi
 			continue
 		fi
 
@@ -187,9 +181,6 @@ swap_part_selection() {
 		fi
 
 		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
-			if [ "$i" != "1" ]; then
-				i=$((i - 1))
-			fi
 			continue
 		fi
 
@@ -208,9 +199,6 @@ swap_part_selection() {
 		fi
 
 		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
-			if [ "$i" != "1" ]; then
-				i=$((i - 1))
-			fi
 			continue
 		fi
 
