@@ -47,6 +47,14 @@ menu() {
 		print_success "Done !"
 	fi
 
+	if [[ "$CHOICE" == "[2]"* ]]; then
+		clear
+		print_info "Configuring GDM..."
+		localectl set-x11-keymap fr
+		print_success "Done !"
+		sleep 2
+	fi
+	
 	if [[ "$CHOICE" == "[6]"* ]]; then
 		exit
 	fi
