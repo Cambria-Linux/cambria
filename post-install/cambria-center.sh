@@ -83,6 +83,11 @@ menu() {
 		emerge -quDN @world
 	fi
 
+	if [[ "$CHOICE" == "[5]"* ]]; then
+		clear
+		reboot
+	fi
+
 	if [[ "$CHOICE" == "[6]"* ]]; then
 		exit
 	fi
