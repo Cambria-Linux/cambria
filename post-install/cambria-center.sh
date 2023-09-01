@@ -36,7 +36,7 @@ EOF
 }
 
 menu() {
-	gum_menu "Language configuration" "GDM AZERTY" "Clean system (takes some while)" "System optimizer (takes some while)" "Reboot (needed to apply changes)" "Exit"
+	gum_menu "Language configuration" "GDM AZERTY" "Clean VIDEO_CARDS (takes some while)" "CPU optimizer (takes some while)" "Reboot (needed to apply changes)" "Exit"
 
 	# Locale menu
 	if [[ "$CHOICE" == "[1]"* ]]; then
@@ -54,7 +54,7 @@ menu() {
 		print_success "Done !"
 		sleep 2
 	fi
-	
+
 	if [[ "$CHOICE" == "[6]"* ]]; then
 		exit
 	fi
