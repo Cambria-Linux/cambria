@@ -327,6 +327,7 @@ systemctl preset-all --preset-mode=enable-only
 EOF
 
 rm /mnt/gentoo/$(basename $FILE)
+cp /usr/bin/cambria-center /mnt/gentoo/usr/bin/
 
 echo ""
 
