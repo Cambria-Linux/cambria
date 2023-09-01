@@ -63,7 +63,7 @@ menu() {
 
 	if [[ "$CHOICE" == "[3]"* ]]; then
 		clear
-		GPUS = $(gum choose --header "What GPU(s) do you have ?" "Intel" "AMD" "NVIDIA" "NVIDIA (nouveau)" --no-limit)
+		GPUS=$(gum choose --header "What GPU(s) do you have ?" "None" "Intel" "AMD" "NVIDIA" "NVIDIA (nouveau)" --no-limit)
 		VIDEO_CARDS="fbdev vesa "
 		for gpu in $GPUS; do
 			if [ "$gpu" == "Intel" ]; then
