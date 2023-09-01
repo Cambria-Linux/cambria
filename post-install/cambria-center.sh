@@ -41,7 +41,7 @@ EOF
 }
 
 menu() {
-	gum_menu "Language configuration" "GDM AZERTY" "Clean VIDEO_CARDS (takes some while)" "CPU optimizer (takes some while)" "Reboot (needed to apply changes)" "Exit"
+	gum_menu "Language configuration" "GDM AZERTY" "Clean VIDEO_CARDS (takes some while)" "CPU optimizer (takes some while)" "Build jobs (VERY IMPORTANT)" "Reboot (needed to apply changes)" "Exit"
 
 	# Locale menu
 	if [[ "$CHOICE" == "[1]"* ]]; then
@@ -90,10 +90,17 @@ menu() {
 
 	if [[ "$CHOICE" == "[5]"* ]]; then
 		clear
-		reboot
+		BUILD_JOBS=$(eval "gum choose {1..$(nproc)}")
+		sed -i "/MAKEOPTS/d" /etc/portage/make.conf
+		echo "MAKEOPTS=\"-j$BUILD_JOBS\"" >>/etc/portage/make.conf
 	fi
 
 	if [[ "$CHOICE" == "[6]"* ]]; then
+		clear
+		reboot
+	fi
+
+	if [[ "$CHOICE" == "[7]"* ]]; then
 		exit
 	fi
 
