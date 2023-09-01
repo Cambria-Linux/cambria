@@ -70,11 +70,13 @@ menu() {
 	echo "                   CAMBRIA GENERATION TOOL                           "
 	echo "====================================================================="
 	echo ""
-	gum_menu "BASE" "GNOME"
+	gum_menu "BASE" "KDE" "GNOME"
 
 	if [[ "$CHOICE" == "[1]"* ]]; then
 		source stage-generation/base.sh
 	elif [[ "$CHOICE" == "[2]"* ]]; then
+		source stage-generation/kde.sh
+	elif [[ "$CHOICE" == "[3]"* ]]; then
 		source stage-generation/gnome.sh
 	else
 		INVALID_ANSWER=1
