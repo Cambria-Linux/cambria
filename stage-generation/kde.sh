@@ -36,13 +36,28 @@ EOF
 
     echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
     echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
-    echo "net-dns/avahi -gtk -qt5" >>etc/portage/package.use/avahi
+    echo "net-dns/avahi -gtk -qt5 mdnsresponder-compat" >>etc/portage/package.use/avahi
 	echo "net-wireless/wpa_supplicant -qt5" >>etc/portage/package.use/wpa_supplicant
 	echo "app-text/mupdf -opengl -X" >>etc/portage/package.use/mupdf
     echo "kde-plasma/plasma-meta discover display-manager sddm wallpapers" >>etc/portage/package.use/kde
     echo "kde-plasma/discover flatpak" >>etc/portage/package.use/discover
     echo "kde-apps/kde-apps-meta accessibility -admin -education -games graphics multimedia -network -pim -sdk utils" >>etc/portage/package.use/kde-apps
-
+    echo "dev-qt/qtwebengine widgets" >>etc/portage/package.use/qtwebengine
+    echo "dev-qt/qtwebchannel qml" >>etc/portage/package.use/qtwebchannel
+    echo "sys-libs/zlib minizip" >>etc/portage/package.use/zlib
+    echo "kde-frameworks/kconfig qml" >>etc/portage/package.use/kconfig
+    echo "kde-frameworks/kitemmodels qml" >>etc/portage/package.use/kitemmodels
+    echo "dev-qt/qtcharts qml" >>etc/portage/package.use/qtcharts
+    echo "dev-qt/qtpositioning geoclue" >>etc/portage/package.use/qtpositioning
+    echo "kde-frameworks/sonnet qml" >>etc/portage/package.use/sonnet
+    echo "dev-qt/qtmultimedia qml" >>etc/portage/package.use/qtmultimedia
+    echo "media-libs/mlt ffmpeg frei0r" >>etc/portage/package.use/mlt
+    echo "media-video/ffmpeg libass" >>etc/portage/package.use/ffmpeg
+    echo "media-libs/opencv contrib contribdnn" >>etc/portage/package.use/opencv
+    echo "app-text/poppler nss" >>etc/portage/package.use/poppler
+    echo "kde-plasma/kwin lock" >>etc/portage/package.use/kwin
+    echo "kde-frameworks/prison qml" >>etc/portage/package.use/prison
+    
     cat <<EOF | chroot .
 emerge -quDN @world
 EOF
