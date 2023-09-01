@@ -50,6 +50,7 @@ menu() {
 		print_info "Configuring locale..."
 		configure_locale
 		print_success "Done !"
+		rm -rf /home/*/.config
 	fi
 
 	if [[ "$CHOICE" == "[2]"* ]]; then
