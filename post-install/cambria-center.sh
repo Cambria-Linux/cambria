@@ -50,7 +50,6 @@ menu() {
 		print_info "Configuring locale..."
 		configure_locale
 		print_success "Done !"
-		rm -rf /home/*/.config
 	fi
 
 	if [[ "$CHOICE" == "[2]"* ]]; then
@@ -101,6 +100,8 @@ menu() {
 
 	if [[ "$CHOICE" == "[6]"* ]]; then
 		clear
+		rm -rf /home/*/.config/dconf/user
+		rm -rf /home/*/.config/plasma*
 		reboot
 	fi
 
