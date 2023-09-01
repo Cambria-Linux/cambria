@@ -76,6 +76,13 @@ menu() {
 		emerge --depclean
 	fi
 
+	if [[ "$CHOICE" == "[4]"* ]]; then
+		clear
+		emerge -q --selective=y app-portage/cpuid2cpuflags
+		echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
+		emerge -quDN @world
+	fi
+
 	if [[ "$CHOICE" == "[6]"* ]]; then
 		exit
 	fi
