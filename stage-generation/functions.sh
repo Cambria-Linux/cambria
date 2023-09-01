@@ -105,6 +105,8 @@ gen_iso() {
 #!/bin/bash
 ./install.sh
 EOF
+		cp post-install/cambria-center.sh squashfs-root/usr/bin/cambria-center
+		chmod +x squashfs-root/usr/bin/cambria-center
 		cp install.sh squashfs-root/root/install.sh
 		chmod +x squashfs-root/root/install.sh
 		chmod +x squashfs-root/root/.bashrc
