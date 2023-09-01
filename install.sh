@@ -135,9 +135,6 @@ uefi_part_selection() {
 		fi
 
 		if [ "$part" == "$ROOT_PART" ]; then
-			if [ "$i" != "1" ]; then
-				i=$((i - 1))
-			fi
 			continue
 		fi
 
@@ -156,9 +153,6 @@ uefi_part_selection() {
 		fi
 
 		if [ "$part" == "$ROOT_PART" ]; then
-			if [ "$i" != "1" ]; then
-				i=$((i - 1))
-			fi
 			continue
 		fi
 
@@ -172,6 +166,52 @@ uefi_part_selection() {
 	if [ "$UEFI_PART" == "" ]; then
 		clear
 		uefi_part_selection
+	fi
+}
+
+swap_part_selection() {
+	parts=$(ls $DISK* | grep "$DISK.*")
+	echo "SWAP partition selection:"
+	echo ""
+	i=0
+	for part in $parts; do
+		if [ "$i" == "0" ]; then
+			i=$((i + 1))
+			continue
+		fi
+
+		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
+			continue
+		fi
+
+		echo "[$i] $part"
+		i=$((i + 1))
+	done
+
+	echo ""
+	read -p "Your choice: " CHOICE
+
+	i=0
+	for part in $parts; do
+		if [ "$i" == "0" ]; then
+			i=$((i + 1))
+			continue
+		fi
+
+		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
+			continue
+		fi
+
+		if [ "$i" == "$CHOICE" ]; then
+			SWAP_PART=$part
+		fi
+
+		i=$((i + 1))
+	done
+
+	if [ "$SWAP_PART" == "" ]; then
+		clear
+		swap_part_selection
 	fi
 }
 
@@ -225,6 +265,8 @@ root_part_selection
 clear
 uefi_part_selection
 clear
+swap_part_selection
+clear
 user_account
 clear
 root_password
@@ -251,8 +293,11 @@ mkfs.vfat $UEFI_PART &>/dev/null
 mkdir -p /mnt/gentoo/boot/efi
 mount $UEFI_PART /mnt/gentoo/boot/efi
 
+mkswap $SWAP_PART
+
 echo "UUID=$(blkid -o value -s UUID "$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
 echo "UUID=$(blkid -o value -s UUID "$ROOT_PART") / $(lsblk -nrp -o FSTYPE $ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
+echo "UUID=$(blkid -o value -s UUID "$SWAP_PART") swap swap pri=1 0 0" >>/mnt/gentoo/etc/fstab
 
 # Keymap configuration
 echo "KEYMAP=$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
