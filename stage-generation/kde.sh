@@ -28,9 +28,9 @@ build() {
     print_info "Building $STAGE stage..."
 	setup_chroot
     cat <<EOF | chroot .
-emerge-webrsync
+eix-sync
 
-emerge --sync --quiet
+eix-update
 
 EOF
 
