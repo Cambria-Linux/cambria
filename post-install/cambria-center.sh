@@ -41,7 +41,7 @@ EOF
 }
 
 menu() {
-	gum_menu "Language configuration" "GDM AZERTY" "Clean VIDEO_CARDS (takes some while)" "CPU optimizer (takes some while)" "Build jobs (VERY IMPORTANT)" "Reboot (needed to apply changes)" "Exit"
+	gum_menu "Language configuration" "Display Manager AZERTY" "Clean VIDEO_CARDS (takes some while)" "CPU optimizer (takes some while)" "Build jobs (VERY IMPORTANT)" "Reboot (needed to apply changes)" "Exit"
 
 	# Locale menu
 	if [[ "$CHOICE" == "[1]"* ]]; then
@@ -55,7 +55,7 @@ menu() {
 
 	if [[ "$CHOICE" == "[2]"* ]]; then
 		clear
-		print_info "Configuring GDM..."
+		print_info "Configuring display manager..."
 		localectl set-x11-keymap fr
 		print_success "Done !"
 		sleep 2
