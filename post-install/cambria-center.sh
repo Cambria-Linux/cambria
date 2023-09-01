@@ -55,6 +55,27 @@ menu() {
 		sleep 2
 	fi
 
+	if [[ "$CHOICE" == "[3]"* ]]; then
+		clear
+		GPUS = $(gum choose --header "What GPU(s) do you have ?" "Intel" "AMD" "NVIDIA" "NVIDIA (nouveau)" --no-limit)
+		VIDEO_CARDS=""
+		for gpu in $GPUS; do
+			if [ "$gpu" == "Intel" ]; then
+				VIDEO_CARDS+="intel i915 i965 "
+			elif [ "$gpu" == "AMD" ]; then
+				VIDEO_CARDS+="radeonsi amdgpu "
+			elif [ "$gpu" == "NVIDIA" ]; then
+				VIDEO_CARDS+="nvidia "
+			elif [ "$gpu" == "NVIDIA (nouveau)" ]; then
+				VIDEO_CARDS+="nouveau "
+			fi
+		done
+		sed -i "/VIDEO_CARDS/d" /etc/portage/make.conf
+		echo "VIDEO_CARDS=\"$VIDEO_CARDS\"" >> /etc/portage/make.conf
+		emerge -quDN @world
+		emerge --depclean
+	fi
+
 	if [[ "$CHOICE" == "[6]"* ]]; then
 		exit
 	fi
