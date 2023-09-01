@@ -16,6 +16,11 @@ print_success() {
 	echo -e "\e[1;32m$1\e[0m"
 }
 
+if [ "$UID" != "0" ]; then
+	print_err "This script must be run as root !"
+	exit 1
+fi
+
 gum_menu() {
 	i=1
 	CHOICES=()
