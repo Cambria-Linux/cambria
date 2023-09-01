@@ -90,7 +90,7 @@ menu() {
 
 	if [[ "$CHOICE" == "[5]"* ]]; then
 		clear
-		BUILD_JOBS=$(eval "gum choose {1..$(nproc)}")
+		BUILD_JOBS=$(eval "gum choose --header "Select a number of MAKE jobs" {1..$(nproc)}")
 		sed -i "/MAKEOPTS/d" /etc/portage/make.conf
 		echo "MAKEOPTS=\"-j$BUILD_JOBS\"" >>/etc/portage/make.conf
 	fi
