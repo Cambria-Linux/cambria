@@ -66,7 +66,7 @@ EOF
 }
 
 menu() {
-	gum_menu "Language configuration" "Display Manager AZERTY" "Timeonze configuration" "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Reboot (needed to apply changes)" "Exit"
+	gum_menu "Language configuration" "Display Manager AZERTY" "Timezone configuration" "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Reboot (needed to apply changes)" "Exit"
 
 	# Locale menu
 	if [[ "$CHOICE" == "[1]"* ]]; then
@@ -105,6 +105,7 @@ menu() {
 		done
 
 		country=$(echo $listc | tr ' ' '\n' | gum filter)
+		rm -f /etc/localtime
 		ln -s /usr/share/zoneinfo/$location/$country /etc/localtime
 	fi
 
@@ -167,7 +168,8 @@ menu() {
 	menu
 }
 
-systemctl --user disable --now pulseaudio.socket pulseaudio.service
-systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service
+su $(logname) -c "systemctl --user disable --now pulseaudio.socket pulseaudio.service"
+su $(logname) -c "systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service"
 configure_aliases
+clear
 menu
