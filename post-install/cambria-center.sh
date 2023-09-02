@@ -103,10 +103,12 @@ menu() {
 		clear
 		rm -rf /home/*/.config/dconf/user
 		rm -rf /home/*/.config/plasma*
+		rm -f /etc/xdg/autostart/cambria-center.desktop
 		reboot
 	fi
 
 	if [[ "$CHOICE" == "[7]"* ]]; then
+		rm -f /etc/xdg/autostart/cambria-center.desktop
 		exit
 	fi
 
@@ -115,4 +117,3 @@ menu() {
 }
 
 menu
-rm -f /etc/xdg/autostart/cambria-center.desktop
