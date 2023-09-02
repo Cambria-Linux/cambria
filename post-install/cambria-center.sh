@@ -168,6 +168,12 @@ menu() {
 	menu
 }
 
+if [ "$XDG_CURRENT_DESKTOP" == "GNOME" ]; then
+	su $(logname) -c "gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'"
+	su $(logname) -c "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"
+	flatpak install org.gtk.Gtk3theme.adw-gtk3 org.gtk.Gtk3theme.adw-gtk3-dark
+fi
+
 su $(logname) -c "systemctl --user disable --now pulseaudio.socket pulseaudio.service"
 su $(logname) -c "systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service"
 configure_aliases
