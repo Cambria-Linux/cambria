@@ -37,27 +37,32 @@ user_account() {
 }
 
 stage_selection() {
-	echo "ARCHIVE SELECTION:"
-	i=1
 	ARCHIVES=/mnt/iso/*.tar.xz
-	for file in $ARCHIVES; do
-		echo "[$i] $file"
-		i=$((i + 1))
-	done
-	echo ""
-	read -p "Your choice: " CHOICE
+	if [ "${#ARCHIVES[@]}" == "1" ]; then
+		FILE=${ARCHIVES[0]}
+	else
+		echo "ARCHIVE SELECTION:"
+		i=1
+		
+		for file in $ARCHIVES; do
+			echo "[$i] $file"
+			i=$((i + 1))
+		done
+		echo ""
+		read -p "Your choice: " CHOICE
 
-	i=1
-	for file in /mnt/iso/*.tar.xz; do
-		if [ "$CHOICE" == "$i" ]; then
-			FILE=$file
+		i=1
+		for file in /mnt/iso/*.tar.xz; do
+			if [ "$CHOICE" == "$i" ]; then
+				FILE=$file
+			fi
+			i=$((i + 1))
+		done
+
+		if [ -z $FILE ]; then
+			clear
+			stage_selection
 		fi
-		i=$((i + 1))
-	done
-
-	if [ -z $FILE ]; then
-		clear
-		stage_selection
 	fi
 }
 
