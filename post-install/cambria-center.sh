@@ -115,3 +115,4 @@ menu() {
 }
 
 menu
+rm -f /etc/xdg/autostart/cambria-center.desktop
