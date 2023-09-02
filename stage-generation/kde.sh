@@ -62,7 +62,7 @@ EOF
 emerge -quDN @world
 EOF
 
-    install_packages kde-plasma/plasma-meta www-client/firefox-bin mail-client/thunderbird-bin
+    install_packages kde-plasma/plasma-meta kde-apps/kate kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin
     enable_services sddm NetworkManager bluetooth avahi-daemon cups
 
     cat <<EOF | chroot .
