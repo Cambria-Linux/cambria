@@ -42,7 +42,7 @@ EOF
 }
 
 menu() {
-	gum_menu "Language configuration" "Display Manager AZERTY" "Clean VIDEO_CARDS (takes some while)" "CPU optimizer (takes some while)" "Build jobs (VERY IMPORTANT)" "Reboot (needed to apply changes)" "Exit"
+	gum_menu "Language configuration" "Display Manager AZERTY" "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Reboot (needed to apply changes)" "Exit"
 
 	# Locale menu
 	if [[ "$CHOICE" == "[1]"* ]]; then
@@ -63,6 +63,23 @@ menu() {
 
 	if [[ "$CHOICE" == "[3]"* ]]; then
 		clear
+		BUILD_JOBS=$(eval "gum choose --header \"Select a number of MAKE jobs\" {1..$(nproc)}")
+		sed -i "/MAKEOPTS/d" /etc/portage/make.conf
+		echo "MAKEOPTS=\"-j$BUILD_JOBS\"" >>/etc/portage/make.conf
+		EMERGE_JOBS=$(eval "gum choose --header \"Select a number of EMERGE jobs\" {1..$(lscpu --all --parse=CORE,SOCKET | grep -Ev "^#" | sort -u | wc -l)}")
+		sed -i "/EMERGE_DEFAULT_OPTS/d" /etc/portage/make.conf
+		echo "EMERGE_DEFAULT_OPTS=\"--jobs $EMERGE_JOBS\"" >>/etc/portage/make.conf
+	fi
+
+	if [[ "$CHOICE" == "[4]"* ]]; then
+		clear
+		emerge -q --selective=y app-portage/cpuid2cpuflags
+		echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
+		emerge -quDN @world
+	fi
+
+	if [[ "$CHOICE" == "[5]"* ]]; then
+		clear
 		GPUS=$(gum choose --header "What GPU(s) do you have ?" "None" "Intel" "AMD" "NVIDIA" "NVIDIA (nouveau)" --no-limit)
 		VIDEO_CARDS="fbdev vesa "
 		for gpu in $GPUS; do
@@ -80,23 +97,6 @@ menu() {
 		echo "VIDEO_CARDS=\"$VIDEO_CARDS\"" >> /etc/portage/make.conf
 		emerge -quDN @world
 		emerge --depclean
-	fi
-
-	if [[ "$CHOICE" == "[4]"* ]]; then
-		clear
-		emerge -q --selective=y app-portage/cpuid2cpuflags
-		echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
-		emerge -quDN @world
-	fi
-
-	if [[ "$CHOICE" == "[5]"* ]]; then
-		clear
-		BUILD_JOBS=$(eval "gum choose --header \"Select a number of MAKE jobs\" {1..$(nproc)}")
-		sed -i "/MAKEOPTS/d" /etc/portage/make.conf
-		echo "MAKEOPTS=\"-j$BUILD_JOBS\"" >>/etc/portage/make.conf
-		EMERGE_JOBS=$(eval "gum choose --header \"Select a number of EMERGE jobs\" {1..$(lscpu --all --parse=CORE,SOCKET | grep -Ev "^#" | sort -u | wc -l)}")
-		sed -i "/EMERGE_DEFAULT_OPTS/d" /etc/portage/make.conf
-		echo "EMERGE_DEFAULT_OPTS=\"--jobs $EMERGE_JOBS\"" >>/etc/portage/make.conf
 	fi
 
 	if [[ "$CHOICE" == "[6]"* ]]; then
