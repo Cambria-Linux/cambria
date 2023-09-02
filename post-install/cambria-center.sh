@@ -17,8 +17,9 @@ print_success() {
 }
 
 if [ "$UID" != "0" ]; then
-	print_err "This script must be run as root !"
-	exit 1
+	print_info "You're not running cambria-center as root... Please type root password here."
+	su -c "cambria-center"
+	exit
 fi
 
 gum_menu() {
