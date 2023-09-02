@@ -329,6 +329,9 @@ EOF
 rm /mnt/gentoo/$(basename $FILE)
 cp /usr/bin/cambria-center /mnt/gentoo/usr/bin/
 
+mkdir -p /mnt/gentoo/etc/xdg/autostart
+cp /etc/xdg/autostart/cambria-center.desktop /mnt/gentoo/etc/xdg/autostart/
+
 echo ""
 
 echo "Installation has finished !"
