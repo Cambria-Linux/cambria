@@ -41,6 +41,27 @@ LC_COLLATE="C.UTF-8"
 EOF
 }
 
+configure_aliases() {
+	echo "alias cambria-install=\"emerge -aq\"" >>/etc/bash/bashrc
+	cat <<EOF > /usr/bin/cambria-delete
+#!/bin/bash
+emerge --deselect $@ && emerge --depclean
+EOF
+	cat <<EOF > /usr/bin/cambria-update
+#!/bin/bash
+emerge --sync && emerge -avuDN @world
+EOF
+
+	cat <<EOF > /usr/bin/cambria-update-sleep
+#!/bin/bash
+emerge --sync && emerge -avuDN @world && shutdown -h now
+EOF
+
+	chmod +x /usr/bin/cambria-delete
+	chmod +x /usr/bin/cambria-update
+	chmod +x /usr/bin/cambria-update-sleep
+}
+
 menu() {
 	gum_menu "Language configuration" "Display Manager AZERTY" "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Reboot (needed to apply changes)" "Exit"
 
@@ -116,4 +137,5 @@ menu() {
 	menu
 }
 
+configure_aliases
 menu
