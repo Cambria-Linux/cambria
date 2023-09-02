@@ -66,7 +66,7 @@ EOF
 }
 
 menu() {
-	gum_menu "Language configuration" "Display Manager AZERTY" "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Reboot (needed to apply changes)" "Exit"
+	gum_menu "Language configuration" "Display Manager AZERTY" "Timeonze configuration" "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Reboot (needed to apply changes)" "Exit"
 
 	# Locale menu
 	if [[ "$CHOICE" == "[1]"* ]]; then
@@ -86,6 +86,29 @@ menu() {
 	fi
 
 	if [[ "$CHOICE" == "[3]"* ]]; then
+		unset TIMEZONE location country listloc listc countrypart
+
+		for l in /usr/share/zoneinfo/*; do
+			[ -d $l ] || continue
+			l=${l##*/}
+			case $l in
+				Etc|posix|right) continue;;
+			esac
+			listloc="$listloc $l"
+		done
+
+		location=$(echo $listloc | tr ' ' '\n' | gum filter)
+
+		for c in /usr/share/zoneinfo/$location/*; do
+			c=${c##*/}
+			listc="$listc $c"
+		done
+
+		country=$(echo $listc | tr ' ' '\n' | gum filter)
+		ln -s /usr/share/zoneinfo/$location/$country /etc/localtime
+	fi
+
+	if [[ "$CHOICE" == "[4]"* ]]; then
 		clear
 		BUILD_JOBS=$(eval "gum choose --header \"Select a number of MAKE jobs\" {1..$(nproc)}")
 		sed -i "/MAKEOPTS/d" /etc/portage/make.conf
@@ -95,14 +118,14 @@ menu() {
 		echo "EMERGE_DEFAULT_OPTS=\"--jobs $EMERGE_JOBS\"" >>/etc/portage/make.conf
 	fi
 
-	if [[ "$CHOICE" == "[4]"* ]]; then
+	if [[ "$CHOICE" == "[5]"* ]]; then
 		clear
 		emerge -q --selective=y app-portage/cpuid2cpuflags
 		echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
 		emerge -quDN @world
 	fi
 
-	if [[ "$CHOICE" == "[5]"* ]]; then
+	if [[ "$CHOICE" == "[6]"* ]]; then
 		clear
 		GPUS=$(gum choose --header "What GPU(s) do you have ?" "None" "Intel" "AMD" "NVIDIA" "NVIDIA (nouveau)" --no-limit)
 		VIDEO_CARDS="fbdev vesa "
@@ -123,7 +146,7 @@ menu() {
 		emerge --depclean
 	fi
 
-	if [[ "$CHOICE" == "[6]"* ]]; then
+	if [[ "$CHOICE" == "[7]"* ]]; then
 		clear
 		rm -rf /home/*/.config/dconf/user
 		rm -rf /home/*/.config/plasma*
@@ -135,7 +158,7 @@ menu() {
 		reboot
 	fi
 
-	if [[ "$CHOICE" == "[7]"* ]]; then
+	if [[ "$CHOICE" == "[8]"* ]]; then
 		rm -f /etc/xdg/autostart/cambria-center.desktop
 		exit
 	fi
