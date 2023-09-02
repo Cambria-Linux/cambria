@@ -16,6 +16,12 @@ print_success() {
 	echo -e "\e[1;32m$1\e[0m"
 }
 
+processes=($(pgrep cambria-center))
+if [ "$XDG_CURRENT_DESKTOP" == "KDE" ] && [ "${#processes[@]}" == "1" ]; then
+	konsole -e "cambria-center"
+	exit
+fi
+
 if [ "$UID" != "0" ]; then
 	print_info "You're not running cambria-center as root... Please type root password here."
 	su -c "cambria-center"
@@ -35,10 +41,7 @@ gum_menu() {
 configure_locale() {
 	echo "$LOCALE.UTF-8 UTF-8" >> /etc/locale.gen
 	locale-gen
-	cat <<EOF > /etc/locale.conf
-LANG="$LOCALE.UTF-8"
-LC_COLLATE="C.UTF-8"
-EOF
+	eselect locale set $LOCALE.UTF-8
 }
 
 configure_aliases() {
@@ -124,6 +127,10 @@ menu() {
 		clear
 		rm -rf /home/*/.config/dconf/user
 		rm -rf /home/*/.config/plasma*
+		rm -rf /home/*/.config/user-dirs*
+		rm -rf /home/*/.local/share/user-places*
+		rm -rf /home/*/*
+		su $(logname) -c "LANG=$LOCALE.UTF-8 xdg-user-dirs-update"
 		rm -f /etc/xdg/autostart/cambria-center.desktop
 		reboot
 	fi

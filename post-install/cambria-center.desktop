@@ -23,3 +23,5 @@ Terminal=true
 
 # Describes the categories in which this entry should be shown
 Categories=System;
+
+X-KDE-autostart-after=panel
