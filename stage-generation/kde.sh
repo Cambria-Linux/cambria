@@ -41,7 +41,7 @@ EOF
 	echo "app-text/mupdf -opengl -X" >>etc/portage/package.use/mupdf
     echo "kde-plasma/plasma-meta discover display-manager sddm wallpapers" >>etc/portage/package.use/kde
     echo "kde-plasma/discover flatpak" >>etc/portage/package.use/discover
-    echo "kde-apps/kde-apps-meta accessibility -admin -education -games graphics multimedia -network -pim -sdk utils" >>etc/portage/package.use/kde-apps
+    
     echo "dev-qt/qtwebengine widgets" >>etc/portage/package.use/qtwebengine
     echo "dev-qt/qtwebchannel qml" >>etc/portage/package.use/qtwebchannel
     echo "sys-libs/zlib minizip" >>etc/portage/package.use/zlib
@@ -62,7 +62,7 @@ EOF
 emerge -quDN @world
 EOF
 
-    install_packages kde-plasma/plasma-meta kde-apps/kde-apps-meta www-client/firefox-bin mail-client/thunderbird-bin
+    install_packages kde-plasma/plasma-meta www-client/firefox-bin mail-client/thunderbird-bin
     enable_services sddm NetworkManager bluetooth avahi-daemon cups
 
     cat <<EOF | chroot .
