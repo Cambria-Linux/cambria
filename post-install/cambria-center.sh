@@ -144,5 +144,7 @@ menu() {
 	menu
 }
 
+systemctl --user disable --now pulseaudio.socket pulseaudio.service
+systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service
 configure_aliases
 menu
