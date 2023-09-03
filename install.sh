@@ -65,6 +65,11 @@ EOMF
 
 chmod +x /usr/bin/system_install
 
+exit_() {
+    echo $1
+    exit
+}
+
 mount_iso() {
 	mkdir -p /mnt/iso
 	if [ -b /dev/mapper/ventoy ]; then
@@ -159,7 +164,7 @@ echo ""
 echo "Let's start !"
 echo ""
 
-gum confirm "Ready?" || $(echo "See you next time!"; exit)
+gum confirm "Ready?" || exit_ "See you next time!"
 
 echo ""
 
@@ -181,7 +186,7 @@ clear
 config_keymap
 clear
 
-gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || $(echo "Installation aborted, exiting."; exit)
+gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || exit_ "Installation aborted, exiting."
 
 gum spin -s pulse --show_output --title="Please wait while the script is doing the install for you :D" /usr/bin/system_install
 
