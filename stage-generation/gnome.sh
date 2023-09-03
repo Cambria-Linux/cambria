@@ -65,5 +65,11 @@ EOF
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 EOF
 
+	wget https://github.com/lassekongo83/adw-gtk3/releases/download/v4.9/adw-gtk3v4-9.tar.xz
+	BASE_DIR=$PWD
+	cd usr/share/themes
+	tar -xf $BASE_DIR/adw-gtk3*.tar.xz
+	cd $BASE_DIR
+	rm adw-gtk3*.tar.xz
     unmount_chroot
 }
