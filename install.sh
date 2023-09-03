@@ -333,7 +333,57 @@ mkdir -p /mnt/gentoo/etc/xdg/autostart
 cp /etc/xdg/autostart/cambria-center.desktop /mnt/gentoo/etc/xdg/autostart/
 
 echo ""
+clear
 
+# Locale configuration
+LOCALE=$(grep "UTF-8" /mnt/gentoo/usr/share/i18n/SUPPORTED | awk '{print $1}' | sed 's/^#//;s/\.UTF-8//' | gum filter --limit 1 --header "Choose your locale:")
+echo "$LOCALE.UTF-8 UTF-8" >> /mnt/gentoo/etc/locale.gen
+cat <<EOF | chroot /mnt/gentoo
+locale-gen
+eselect locale set $LOCALE.UTF-8
+EOF
+
+# Keymap configuration
+xkb_symbols=$(find /mnt/gentoo/usr/share/X11/xkb/symbols -maxdepth 1 -type f)
+X11_KEYMAP=$(for file in ${xkb_symbols[@]}; do [ "$(cat $file | grep '// Keyboard layouts')" != "" ] && echo $(basename $file) ; done | sort | gum filter --header "Choose a X11 keymap:")
+
+mkdir -p /mnt/gentoo/etc/X11/xorg.conf.d
+cat <<EOF > /mnt/gentoo/etc/X11/xorg.conf.d/00-keyboard.conf
+Section "InputClass"
+  Identifier "system-keyboard"
+  MatchIsKeyboard "on"
+  Option "XkbLayout" "$X11_KEYMAP"
+EndSection
+EOF
+
+# Timezone configuration
+unset TIMEZONE location country listloc listc countrypart
+
+for l in /mnt/gentoo/usr/share/zoneinfo/*; do
+	[ -d $l ] || continue
+	l=${l##*/}
+	case $l in
+		Etc|posix|right) continue;;
+	esac
+	listloc="$listloc $l"
+done
+
+location=$(echo $listloc | tr ' ' '\n' | gum filter --header "Choose a location:")
+
+for c in /mnt/gentoo/usr/share/zoneinfo/$location/*; do
+	c=${c##*/}
+	listc="$listc $c"
+done
+
+country=$(echo $listc | tr ' ' '\n' | gum filter --header "Choose a city:")
+rm -f /mnt/gentoo/etc/localtime
+ln -s /usr/share/zoneinfo/$location/$country /mnt/gentoo/etc/localtime
+
+cat <<EOF | chroot /mnt/gentoo
+su $USERNAME -c "cd /home/$USERNAME && LANG=$LOCALE.UTF-8 xdg-user-dirs-update"
+EOF
+
+clear
 echo "Installation has finished !"
 echo "Press R to reboot..."
 read REBOOT

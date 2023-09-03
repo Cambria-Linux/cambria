@@ -66,50 +66,9 @@ EOF
 }
 
 menu() {
-	gum_menu "Language configuration" "Display Manager AZERTY" "Timezone configuration" "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Reboot (needed to apply changes)" "Exit"
+	gum_menu "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Exit"
 
-	# Locale menu
 	if [[ "$CHOICE" == "[1]"* ]]; then
-		LOCALE=$(grep "UTF-8" /usr/share/i18n/SUPPORTED | awk '{print $1}' | sed 's/^#//;s/\.UTF-8//' | gum filter --limit 1 --header "Choose your locale:")
-		clear
-		print_info "Configuring locale..."
-		configure_locale
-		print_success "Done !"
-	fi
-
-	if [[ "$CHOICE" == "[2]"* ]]; then
-		clear
-		print_info "Configuring display manager..."
-		localectl set-x11-keymap fr
-		print_success "Done !"
-		sleep 2
-	fi
-
-	if [[ "$CHOICE" == "[3]"* ]]; then
-		unset TIMEZONE location country listloc listc countrypart
-
-		for l in /usr/share/zoneinfo/*; do
-			[ -d $l ] || continue
-			l=${l##*/}
-			case $l in
-				Etc|posix|right) continue;;
-			esac
-			listloc="$listloc $l"
-		done
-
-		location=$(echo $listloc | tr ' ' '\n' | gum filter)
-
-		for c in /usr/share/zoneinfo/$location/*; do
-			c=${c##*/}
-			listc="$listc $c"
-		done
-
-		country=$(echo $listc | tr ' ' '\n' | gum filter)
-		rm -f /etc/localtime
-		ln -s /usr/share/zoneinfo/$location/$country /etc/localtime
-	fi
-
-	if [[ "$CHOICE" == "[4]"* ]]; then
 		clear
 		BUILD_JOBS=$(eval "gum choose --header \"Select a number of MAKE jobs\" {1..$(nproc)}")
 		sed -i "/MAKEOPTS/d" /etc/portage/make.conf
@@ -119,14 +78,14 @@ menu() {
 		echo "EMERGE_DEFAULT_OPTS=\"--jobs $EMERGE_JOBS\"" >>/etc/portage/make.conf
 	fi
 
-	if [[ "$CHOICE" == "[5]"* ]]; then
+	if [[ "$CHOICE" == "[2]"* ]]; then
 		clear
 		emerge -q --selective=y app-portage/cpuid2cpuflags
 		echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
 		emerge -quDN @world
 	fi
 
-	if [[ "$CHOICE" == "[6]"* ]]; then
+	if [[ "$CHOICE" == "[3]"* ]]; then
 		clear
 		GPUS=$(gum choose --header "What GPU(s) do you have ?" "None" "Intel" "AMD" "NVIDIA" "NVIDIA (nouveau)" --no-limit)
 		VIDEO_CARDS="fbdev vesa "
@@ -147,19 +106,7 @@ menu() {
 		emerge --depclean
 	fi
 
-	if [[ "$CHOICE" == "[7]"* ]]; then
-		clear
-		rm -rf /home/*/.config/dconf/user
-		rm -rf /home/*/.config/plasma*
-		rm -rf /home/*/.config/user-dirs*
-		rm -rf /home/*/.local/share/user-places*
-		rm -rf /home/*/*
-		su $(logname) -c "LANG=$LOCALE.UTF-8 xdg-user-dirs-update"
-		rm -f /etc/xdg/autostart/cambria-center.desktop
-		reboot
-	fi
-
-	if [[ "$CHOICE" == "[8]"* ]]; then
+	if [[ "$CHOICE" == "[4]"* ]]; then
 		rm -f /etc/xdg/autostart/cambria-center.desktop
 		exit
 	fi
@@ -169,11 +116,11 @@ menu() {
 }
 
 if [ "$XDG_CURRENT_DESKTOP" == "GNOME" ]; then
-	su $(logname) -c "gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'"
-	su $(logname) -c "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"
-	flatpak install org.gtk.Gtk3theme.adw-gtk3 org.gtk.Gtk3theme.adw-gtk3-dark
+	su $(logname) -c "gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' && gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"
+	su $(logname) -c "flatpak install -y --noninteractive org.gtk.Gtk3theme.adw-gtk3 org.gtk.Gtk3theme.adw-gtk3-dark"
 fi
 
+chmod u+s /sbin/unix_chkpwd
 su $(logname) -c "systemctl --user disable --now pulseaudio.socket pulseaudio.service"
 su $(logname) -c "systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service"
 configure_aliases

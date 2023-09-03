@@ -100,6 +100,7 @@ gen_iso() {
 		#===== Here we can edit the gentoo file system in squashfs-root/ ==========
 		# replace with our own root's .bashrc
 		print_info "Editing ISO..."
+		ln -s /mnt/gentoo/usr/bin/gum squashfs-root/usr/bin/gum
 		rm -f squashfs-root/root/.bashrc
 		cat <<EOF >squashfs-root/root/.bashrc
 #!/bin/bash
