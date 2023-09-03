@@ -159,7 +159,7 @@ echo ""
 echo "Let's start !"
 echo ""
 
-gum confirm "Ready?" || echo "See you next time!"; exit
+gum confirm "Ready?" || $(echo "See you next time!"; exit)
 
 echo ""
 
@@ -181,7 +181,7 @@ clear
 config_keymap
 clear
 
-gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || echo "Installation aborted, exiting."; exit
+gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || $(echo "Installation aborted, exiting."; exit)
 
 gum spin -s pulse --show_output --title="Please wait while the script is doing the install for you :D" /usr/bin/system_install
 
