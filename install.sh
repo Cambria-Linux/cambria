@@ -120,7 +120,7 @@ uefi_part_selection() {
 	parts=$(ls $DISK* | grep "$DISK.*")
 	echo "UEFI partition selection:"
 	echo ""
-    UEFI_PART=gum choose --header="Select the efi partiton: (/boot/efi)" $parts)
+    UEFI_PART=$(gum choose --header="Select the efi partiton: (/boot/efi)" $parts)
 
     if [ "$UEFI_PART" == "$ROOT_PART" ]; then
         echo "UEFI partition can't be the same as the root partition!"
