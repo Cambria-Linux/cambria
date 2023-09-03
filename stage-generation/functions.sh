@@ -100,11 +100,17 @@ gen_iso() {
 		#===== Here we can edit the gentoo file system in squashfs-root/ ==========
 		# replace with our own root's .bashrc
 		print_info "Editing ISO..."
+		ln -s /mnt/gentoo/usr/bin/gum squashfs-root/usr/bin/gum
 		rm -f squashfs-root/root/.bashrc
 		cat <<EOF >squashfs-root/root/.bashrc
 #!/bin/bash
 ./install.sh
 EOF
+		mkdir -p squashfs-root/etc/xdg/autostart
+		cp post-install/cambria-center.desktop squashfs-root/etc/xdg/autostart/
+		cp post-install/cambria-center.sh squashfs-root/usr/bin/cambria-center
+		chmod +x squashfs-root/usr/bin/cambria-center
+		chmod +x squashfs-root/etc/xdg/autostart/cambria-center.desktop
 		cp install.sh squashfs-root/root/install.sh
 		chmod +x squashfs-root/root/install.sh
 		chmod +x squashfs-root/root/.bashrc

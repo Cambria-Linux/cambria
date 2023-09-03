@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error
+set -e
+
 #===================================================
 # Cambria Linux install script
 #===================================================
@@ -35,8 +38,11 @@ mkfs.vfat \$UEFI_PART &>/dev/null
 mkdir -p /mnt/gentoo/boot/efi
 mount \$UEFI_PART /mnt/gentoo/boot/efi
 
-echo "UUID=\$(blkid -o value -s UUID "$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
-echo "UUID=\$(blkid -o value -s UUID "$ROOT_PART") / $(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
+mkswap \$SWAP_PART
+
+echo "UUID=\$(blkid -o value -s UUID "\$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "\$ROOT_PART") / \$(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "\$SWAP_PART") swap swap pri=1 0 0" >>/mnt/gentoo/etc/fstab
 
 # Keymap configuration
 echo "KEYMAP=\$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
@@ -61,6 +67,58 @@ systemctl preset-all --preset-mode=enable-only
 EOF
 
 rm /mnt/gentoo/\$(basename \$FILE)
+cp /usr/bin/cambria-center /mnt/gentoo/usr/bin/
+
+mkdir -p /mnt/gentoo/etc/xdg/autostart
+cp /etc/xdg/autostart/cambria-center.desktop /mnt/gentoo/etc/xdg/autostart/
+# Locale configuration
+LOCALE=\$(grep "UTF-8" /mnt/gentoo/usr/share/i18n/SUPPORTED | awk '{print \$1}' | sed 's/^#//;s/\.UTF-8//' | gum filter --limit 1 --header "Choose your locale:")
+echo "\$LOCALE.UTF-8 UTF-8" >> /mnt/gentoo/etc/locale.gen
+cat <<EOF | chroot /mnt/gentoo
+locale-gen
+eselect locale set \$LOCALE.UTF-8
+EOF
+
+# Keymap configuration
+xkb_symbols=\$(find /mnt/gentoo/usr/share/X11/xkb/symbols -maxdepth 1 -type f)
+X11_KEYMAP=\$(for file in \${xkb_symbols[@]}; do [ "\$(cat \$file | grep '// Keyboard layouts')" != "" ] && echo \$(basename \$file) ; done | sort | gum filter --header "Choose a X11 keymap:")
+
+mkdir -p /mnt/gentoo/etc/X11/xorg.conf.d
+cat <<EOF > /mnt/gentoo/etc/X11/xorg.conf.d/00-keyboard.conf
+Section "InputClass"
+  Identifier "system-keyboard"
+  MatchIsKeyboard "on"
+  Option "XkbLayout" "\$X11_KEYMAP"
+EndSection
+EOF
+
+# Timezone configuration
+unset TIMEZONE location country listloc listc countrypart
+
+for l in /mnt/gentoo/usr/share/zoneinfo/*; do
+	[ -d \$l ] || continue
+	l=\${l##*/}
+	case \$l in
+		Etc|posix|right) continue;;
+	esac
+	listloc="\$listloc \$l"
+done
+
+location=\$(echo \$listloc | tr ' ' '\n' | gum filter --header "Choose a location:")
+
+for c in /mnt/gentoo/usr/share/zoneinfo/\$location/*; do
+	c=${c##*/}
+	listc="\$listc \$c"
+done
+
+country=\$(echo \$listc | tr ' ' '\n' | gum filter --header "Choose a city:")
+rm -f /mnt/gentoo/etc/localtime
+ln -s /usr/share/zoneinfo/\$location/\$country /mnt/gentoo/etc/localtime
+
+cat <<EOF | chroot /mnt/gentoo
+su \$USERNAME -c "cd /home/\$USERNAME && LANG=\$LOCALE.UTF-8 xdg-user-dirs-update"
+EOF
+
 EOMF
 
 chmod +x /usr/bin/system_install
@@ -103,8 +161,7 @@ user_account() {
 stage_selection() {
 	echo "ARCHIVE SELECTION:"
 	echo ""
-	ARCHIVES=/mnt/iso/*.tar.xz
-	FILE=$(gum choose --header="Select the wanted stage:" $ARCHIVES)
+	FILE=$(gum choose --header="Select the wanted stage:" /mnt/iso/*.tar.xz)
 }
 
 disk_selection() {
@@ -130,6 +187,52 @@ uefi_part_selection() {
     if [ "$UEFI_PART" == "$ROOT_PART" ]; then
         echo "UEFI partition can't be the same as the root partition!"
         uefi_part_selection
+	fi
+}
+
+swap_part_selection() {
+	parts=$(ls $DISK* | grep "$DISK.*")
+	echo "SWAP partition selection:"
+	echo ""
+	i=0
+	for part in $parts; do
+		if [ "$i" == "0" ]; then
+			i=$((i + 1))
+			continue
+		fi
+
+		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
+			continue
+		fi
+
+		echo "[$i] $part"
+		i=$((i + 1))
+	done
+
+	echo ""
+	read -p "Your choice: " CHOICE
+
+	i=0
+	for part in $parts; do
+		if [ "$i" == "0" ]; then
+			i=$((i + 1))
+			continue
+		fi
+
+		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
+			continue
+		fi
+
+		if [ "$i" == "$CHOICE" ]; then
+			SWAP_PART=$part
+		fi
+
+		i=$((i + 1))
+	done
+
+	if [ "$SWAP_PART" == "" ]; then
+		clear
+		swap_part_selection
 	fi
 }
 
@@ -179,6 +282,8 @@ root_part_selection
 clear
 uefi_part_selection
 clear
+swap_part_selection
+clear
 user_account
 clear
 root_password
@@ -190,8 +295,7 @@ gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || ex
 
 gum spin -s pulse --show_output --title="Please wait while the script is doing the install for you :D" /usr/bin/system_install
 
-echo ""
-
+clear
 echo "Installation has finished !"
 echo "Press R to reboot..."
 read REBOOT
