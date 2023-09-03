@@ -21,27 +21,27 @@ cat << EOMF > /usr/bin/system_install
 #!/usr/bin/env bash
 
 # Mount root partition
-mkfs.ext4 -F $ROOT_PART &>/dev/null
+mkfs.ext4 -F \$ROOT_PART &>/dev/null
 mkdir -p /mnt/gentoo
-mount $ROOT_PART /mnt/gentoo
+mount \$ROOT_PART /mnt/gentoo
 
 # Copy stage archive
-cp $FILE /mnt/gentoo
+cp \$FILE /mnt/gentoo
 
 # Extract stage archive
 cd /mnt/gentoo
-tar xpf $FILE --xattrs-include='*.*' --numeric-owner
+tar xpf \$FILE --xattrs-include='*.*' --numeric-owner
 
 # Mount UEFI partition
-mkfs.vfat $UEFI_PART &>/dev/null
+mkfs.vfat \$UEFI_PART &>/dev/null
 mkdir -p /mnt/gentoo/boot/efi
-mount $UEFI_PART /mnt/gentoo/boot/efi
+mount \$UEFI_PART /mnt/gentoo/boot/efi
 
-echo "UUID=$(blkid -o value -s UUID "$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
-echo "UUID=$(blkid -o value -s UUID "$ROOT_PART") / $(lsblk -nrp -o FSTYPE $ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "$ROOT_PART") / $(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
 
 # Keymap configuration
-echo "KEYMAP=$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
+echo "KEYMAP=\$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
 
 # Execute installation stuff
 mount --types proc /proc /mnt/gentoo/proc
@@ -56,13 +56,13 @@ cat <<EOF | chroot /mnt/gentoo
 grub-install --efi-directory=/boot/efi
 grub-mkconfig -o /boot/grub/grub.cfg
 systemd-machine-id-setup
-useradd -m -G users,wheel,audio,video,input -s /bin/bash $USERNAME
-echo -e "${USER_PASSWORD}\n${USER_PASSWORD}" | passwd -q $USERNAME
-echo -e "${ROOT_PASSWORD}\n${ROOT_PASSWORD}" | passwd -q
+useradd -m -G users,wheel,audio,video,input -s /bin/bash \$USERNAME
+echo -e "\${USER_PASSWORD}\n\${USER_PASSWORD}" | passwd -q \$USERNAME
+echo -e "\${ROOT_PASSWORD}\n\${ROOT_PASSWORD}" | passwd -q
 systemctl preset-all --preset-mode=enable-only
 EOF
 
-rm /mnt/gentoo/$(basename $FILE)
+rm /mnt/gentoo/\$(basename \$FILE)
 EOMF
 
 chmod +x /usr/bin/system_install
