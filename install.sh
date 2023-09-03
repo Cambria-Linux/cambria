@@ -93,7 +93,7 @@ root_password() {
 user_account() {
 	echo "User account creation: "
 	echo ""
-    USERNAME=$(gum input --placehoder="Enter username")
+    USERNAME=$(gum input --placeholder="Enter username")
     USER_PASSWORD=$(gum input --password --placeholder "Enter $USERNAME's password")
 }
 
