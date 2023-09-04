@@ -66,7 +66,7 @@ EOF
 }
 
 menu() {
-	gum_menu "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes some while)" "Clean VIDEO_CARDS (takes some while)" "Exit"
+	gum_menu "Build jobs (VERY IMPORTANT)" "CPU optimizer (takes a while)" "Clean VIDEO_CARDS (takes a while)" "Exit"
 
 	if [[ "$CHOICE" == "[1]"* ]]; then
 		clear
