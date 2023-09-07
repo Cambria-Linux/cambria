@@ -118,54 +118,12 @@ EOF
 
 		#===== Now we will build the new ISO ======================================
 		print_info "New ISO is building..."
-		#===== Generate GRUB image ================================================
-		BOOT_IMG_DATA=$(mktemp -d)
-		BOOT_IMG=$(mktemp -d)/efi.img
 
-		mkdir -p $(dirname $BOOT_IMG)
-
-		truncate -s 8M $BOOT_IMG
-		mkfs.vfat $BOOT_IMG
-		mount $BOOT_IMG $BOOT_IMG_DATA
-		mkdir -p $BOOT_IMG_DATA/efi/boot
-
-		grub-mkimage \
-			-C xz \
-			-O x86_64-efi \
-			-p /boot/grub \
-			-o $BOOT_IMG_DATA/efi/boot/bootx64.efi \
-			boot linux search normal configfile \
-			part_gpt btrfs ext2 fat iso9660 loopback \
-			test keystatus gfxmenu regexp probe \
-			efi_gop efi_uga all_video gfxterm font \
-			echo read ls cat png jpeg halt reboot
-
-		umount $BOOT_IMG_DATA
-		rm -rf $BOOT_IMG_DATA
 		mkdir newiso
-		mkdir -p newiso/boot/grub
-		cp iso/boot/gentoo* newiso/boot/
-		mkdir -p newiso/efi
-		cp $BOOT_IMG newiso/efi/esp.img
-		cat <<EOF >newiso/boot/grub/grub.cfg
-set default=0
-set gfxpayload=keep
-set timeout=10
-insmod all_video
-
-menuentry 'Boot LiveCD' --class gnu-linux --class os {
-        linux /boot/gentoo dokeymap cdroot_marker=image.squashfs subdir=/ looptype=squashfs loop=/image.squashfs cdroot
-        initrd /boot/gentoo.igz
-}
-
-menuentry 'Boot LiveCD (cached)' --class gnu-linux --class os {
-        linux /boot/gentoo dokeymap cdroot_marker=image.squashfs subdir=/ looptype=squashfs loop=/image.squashfs cdroot
-        initrd /boot/gentoo.igz
-}
-EOF
-		cp $OUTPUT.tar.xz newiso/
+		cp -r iso/* newiso/
 		cp image.squashfs newiso/
-		mkisofs -o cambria-$STAGE.iso -R -J -v -d -N -x cambria-$STAGE.iso -hide-rr-moved -no-emul-boot -eltorito-platform efi -eltorito-boot efi/esp.img -V "CAMBRIA$STAGE" -A "Cambria $STAGE" newiso/
+		cp $OUTPUT.tar.xz newiso/
+		grub-mkrescue -joliet -iso-level 3 -o cambria-${STAGE}.iso newiso
 
 		#===== Let's clean up =====================================================
 		rm -f "latest-install-amd64-minimal.txt"
@@ -182,11 +140,12 @@ EOF
 		cp -r iso/* newiso/
 		rm -rf newiso/*.tar.xz
 		cp $OUTPUT.tar.xz newiso/
-		mkisofs -o cambria-$STAGE.iso -R -J -v -d -N -x cambria-$STAGE.iso -hide-rr-moved -no-emul-boot -eltorito-platform efi -eltorito-boot efi/esp.img -V "CAMBRIA$STAGE" -A "Cambria $STAGE" newiso/
+		grub-mkrescue -joliet -iso-level 3 -o cambria-${STAGE}.iso newiso
 		print_success "Done !"
 		print_info "Cleaning up..."
-		umount iso
-		rm -rf iso
-		rm -rf newiso
+		umount -R iso/
+		umount -R final_iso
+		rm -rf iso/
+		rm -rf newiso/
 	fi
 }
