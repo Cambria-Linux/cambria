@@ -11,8 +11,8 @@ mount_iso() {
 	mkdir -p /mnt/iso
 	if [ -b /dev/mapper/ventoy ]; then
 		mount /dev/mapper/ventoy /mnt/iso
-	elif [ -b /dev/disk/by-label/CAMBRIA* ]; then
-		mount /dev/disk/by-label/CAMBRIA* /mnt/iso
+	elif [ -b /dev/disk/by-label/ISOIMAGE* ]; then
+		mount /dev/disk/by-label/ISOIMAGE* /mnt/iso
 	fi
 }
 
