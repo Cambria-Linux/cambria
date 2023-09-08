@@ -60,9 +60,18 @@ EOF
 emerge --sync && emerge -avuDN @world && shutdown -h now
 EOF
 
+	cat <<EOF > /usr/bin/cambria-kernel-testing
+#!/bin/bash
+echo "******Activation du noyau testing******"
+echo sys-kernel/gentoo-kernel-bin ~amd64 >> /etc/portage/package.accept_keywords/kernel
+echo virtual/dist-kernel ~amd64 >> /etc/portage/package.accept_keywords/kernel
+cambria-update
+EOF
+
 	chmod +x /usr/bin/cambria-delete
 	chmod +x /usr/bin/cambria-update
 	chmod +x /usr/bin/cambria-update-sleep
+	chmod +x /usr/bin/cambria-kernel-testing
 }
 
 menu() {
