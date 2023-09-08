@@ -18,7 +18,7 @@ build() {
 	print_success "Done !"
 
 	print_info "Writing portage configuration..."
-	USEFLAGS="-kde gtk egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
+	USEFLAGS="vaapi vdpau -kde gtk egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
 	print_success "Done !"
 
 	print_info "Setting DNS info..."
@@ -30,7 +30,8 @@ build() {
 	cat <<EOF | chroot .
 eix-sync
 
-eix-update
+rm -rf /etc/portage/package.accept_keywords/*
+rm -rf /etc/portage/package.use/*
 
 EOF
 
@@ -40,7 +41,7 @@ EOF
 	echo "x11-libs/libdrm ~amd64" >>etc/portage/package.accept_keywords/libdrm
 	echo "gnome-extra/gnome-software ~amd64" >>etc/portage/package.accept_keywords/gnome-software
 
-	echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
+	echo "x11-libs/libdrm video_cards_intel video_cards_radeon" >>etc/portage/package.use/libdrm
 	echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
 	echo "media-libs/libmediaart -gtk" >>etc/portage/package.use/libmediaart
 	echo "dev-libs/folks eds" >>etc/portage/package.use/folks
@@ -53,6 +54,8 @@ EOF
 	echo "net-dns/avahi -gtk -qt5" >>etc/portage/package.use/avahi
 	echo "net-wireless/wpa_supplicant -qt5" >>etc/portage/package.use/wpa_supplicant
 	echo "app-text/mupdf -opengl -X" >>etc/portage/package.use/mupdf
+	echo "media-video/pipewire sound-server" >>etc/portage/package.use/pipewire
+	echo "media-sound/pulseaudio -daemon" >>etc/portage/package.use/pulseaudio
 
 	cat <<EOF | chroot .
 emerge -quDN @world
