@@ -18,7 +18,7 @@ build() {
 	print_success "Done !"
 
     print_info "Writing portage configuration..."
-    USEFLAGS="kde -gnome egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
+    USEFLAGS="kde -gnome vaapi vdpau egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
     print_success "Done !"
 
     print_info "Setting DNS info..."
@@ -30,7 +30,8 @@ build() {
     cat <<EOF | chroot .
 eix-sync
 
-eix-update
+rm -rf /etc/portage/package.accept_keywords/*
+rm -rf /etc/portage/package.use/*
 
 EOF
 
@@ -57,12 +58,14 @@ EOF
     echo "app-text/poppler nss" >>etc/portage/package.use/poppler
     echo "kde-plasma/kwin lock" >>etc/portage/package.use/kwin
     echo "kde-frameworks/prison qml" >>etc/portage/package.use/prison
+    echo "media-video/pipewire sound-server" >>etc/portage/package.use/pipewire
+	echo "media-sound/pulseaudio -daemon" >>etc/portage/package.use/pulseaudio
     
     cat <<EOF | chroot .
 emerge -quDN @world
 EOF
 
-    install_packages kde-plasma/plasma-meta kde-apps/kate kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin
+    install_packages kde-plasma/plasma-meta sys-block/partitionmanager kde-apps/kate kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin
     enable_services sddm NetworkManager bluetooth avahi-daemon cups
 
     cat <<EOF | chroot .
