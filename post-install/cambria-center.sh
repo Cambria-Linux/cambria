@@ -52,12 +52,12 @@ emerge --deselect $@ && emerge --depclean
 EOF
 	cat <<EOF > /usr/bin/cambria-update
 #!/bin/bash
-emerge --sync && emerge -avuDN @world
+eix-sync && emerge -avuDN @world
 EOF
 
 	cat <<EOF > /usr/bin/cambria-update-sleep
 #!/bin/bash
-emerge --sync && emerge -avuDN @world && shutdown -h now
+eix-sync && emerge -avuDN @world && shutdown -h now
 EOF
 
 	cat <<EOF > /usr/bin/cambria-kernel-testing
