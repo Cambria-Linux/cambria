@@ -122,6 +122,7 @@ EOF
 		mkdir newiso
 		cp -r iso/* newiso/
 		rm -rf newiso/efi/boot/*
+		rm -f newiso/efi.img
 		cp image.squashfs newiso/
 		cp $OUTPUT.tar.xz newiso/
 		grub-mkrescue -joliet -iso-level 3 -o cambria-${STAGE}.iso newiso
@@ -140,6 +141,7 @@ EOF
 		mkdir newiso
 		cp -r iso/* newiso/
 		rm -rf newiso/*.tar.xz
+		rm -rf newiso/efi/boot/*
 		rm -f newiso/efi.img
 		cp $OUTPUT.tar.xz newiso/
 		grub-mkrescue -joliet -iso-level 3 -o cambria-${STAGE}.iso newiso
