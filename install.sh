@@ -139,44 +139,12 @@ swap_part_selection() {
 	parts=$(ls $DISK* | grep "$DISK.*")
 	echo "SWAP partition selection:"
 	echo ""
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
-			continue
-		fi
-
-		echo "[$i] $part"
-		i=$((i + 1))
-	done
-
-	echo ""
-	read -p "Your choice: " CHOICE
-
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
-			continue
-		fi
-
-		if [ "$i" == "$CHOICE" ]; then
-			SWAP_PART=$part
-		fi
-
-		i=$((i + 1))
-	done
-
-	if [ "$SWAP_PART" == "" ]; then
-		clear
+	SWAP_PART=$(gum choose --header="Select the swap partition:" $parts)
+	if [ "$part" == "$ROOT_PART" ]; then
+		echo "SWAP partition can't be the same as the root partition!"
+		swap_part_selection
+	elif [ "$part" == "$UEFI_PART" ]; then
+		echo "SWAP partition can't be the same as the efi partition!
 		swap_part_selection
 	fi
 }
