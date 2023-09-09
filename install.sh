@@ -103,9 +103,9 @@ user_account() {
 }
 
 stage_selection() {
-	echo "ARCHIVE SELECTION:"
+	echo "STAGE SELECTION:"
 	echo ""
-	ARCHIVES=/mnt/iso/*.tar.xz
+	ARCHIVES=/mnt/cdrom/*.tar.xz
 	FILE=$(gum choose --header="Select the wanted stage:" $ARCHIVES)
 }
 
