@@ -55,7 +55,7 @@ stage_selection() {
 		read -p "Your choice: " CHOICE
 
 		i=1
-		for file in /mnt/iso/*.tar.xz; do
+		for file in /mnt/cdrom/*.tar.xz; do
 			if [ "$CHOICE" == "$i" ]; then
 				FILE=$file
 			fi
