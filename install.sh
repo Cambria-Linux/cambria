@@ -37,8 +37,8 @@ mkfs.vfat \$UEFI_PART &>/dev/null
 mkdir -p /mnt/gentoo/boot/efi
 mount \$UEFI_PART /mnt/gentoo/boot/efi
 
-echo "UUID=\$(blkid -o value -s UUID "$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
-echo "UUID=\$(blkid -o value -s UUID "$ROOT_PART") / $(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "\$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "\$ROOT_PART") / $(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
 
 # Keymap configuration
 echo "KEYMAP=\$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
