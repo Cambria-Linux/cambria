@@ -7,14 +7,14 @@ set -e
 # Cambria Linux install script
 #===================================================
 
-mount_iso() {
-	mkdir -p /mnt/iso
-	if [ -b /dev/mapper/ventoy ]; then
-		mount /dev/mapper/ventoy /mnt/iso
-	elif [ -b /dev/disk/by-label/ISOIMAGE* ]; then
-		mount /dev/disk/by-label/ISOIMAGE* /mnt/iso
-	fi
-}
+#mount_iso() {
+#	mkdir -p /mnt/iso
+#	if [ -b /dev/mapper/ventoy ]; then
+#		mount /dev/mapper/ventoy /mnt/iso
+#	elif [ -b /dev/disk/by-label/ISOIMAGE* ]; then
+#		mount /dev/disk/by-label/ISOIMAGE* /mnt/iso
+#	fi
+#}
 
 showkeymap() {
 	if [ -d /usr/share/kbd/keymaps ]; then
@@ -40,7 +40,7 @@ user_account() {
 }
 
 stage_selection() {
-	ARCHIVES=/mnt/iso/*.tar.xz
+	ARCHIVES=/mnt/cdrom/*.tar.xz
 	if [ "${#ARCHIVES[@]}" == "1" ]; then
 		FILE=${ARCHIVES[0]}
 	else
@@ -262,8 +262,6 @@ fi
 
 echo ""
 
-mount_iso
-clear
 stage_selection
 clear
 disk_selection
