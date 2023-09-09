@@ -90,7 +90,7 @@ menu() {
 	if [[ "$CHOICE" == "[2]"* ]]; then
 		clear
 		L10N="af am ar as ast be bg bn bn-IN bo br brx bs ca ca-valencia ckb cs cy da de dgo dsb dz el en en-GB en-ZA eo es et eu fa fi fr fur fy ga gd gl gu gug he hi hr hsb hu id is it ja ka kab kk km kmr-Latn kn ko kok ks lb lo lt lv mai mk ml mn mni mr my nb ne nl nn nr nso oc om or pa pl pt pt-BR ro ru rw sa sat sd si sid sk sl sq sr sr-Latn ss st sv sw-TZ szl ta te tg th tn tr ts tt ug uk uz ve vec vi xh zh-CN zh-TW zu"
-		L10N_CONFIG=$(echo $L10N | tr ' ' '\n' | gum choose --header "What's your L10N config (usually similar to your country) ?")
+		L10N_CONFIG=$(echo $L10N | tr ' ' '\n' | gum filter --header "What's your L10N config (usually similar to your country) ?")
 		echo "L10N=\"$L10N_CONFIG\"" >>/etc/portage/make.conf
 		emerge -quDN @world
 	fi
