@@ -151,23 +151,9 @@ swap_part_selection() {
 
 config_keymap() {
 	unset KEYMAP keymappart
-	while [ ! "$keymappart" ]; do
-		clear
-		read -p "Enter part of your keymap (Eg: us,fr): " input
-		keymappart=$(showkeymap | grep $input) || true
-	done
-	while [ ! "$KEYMAP" ]; do
-		clear
-		count=0
-		for i in $keymappart; do
-			count=$((count + 1))
-			echo "[$count] $i"
-		done
-		read -p "Enter keymap [1-$count]: " input
-		[ "$input" = 0 ] && continue
-		[ "$input" -gt "$count" ] && continue
-		KEYMAP=$(echo $keymappart | tr ' ' '\n' | head -n$input | tail -n1)
-	done
+	echo "Keymap selection:"
+	echo ""
+	keymappart=$(showkeymap | gum filter --placeholder="Enter and find your keymap...")
 }
 
 echo "========================================================================"
