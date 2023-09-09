@@ -72,14 +72,14 @@ exit_() {
     exit
 }
 
-mount_iso() {
-	mkdir -p /mnt/iso
-	if [ -b /dev/mapper/ventoy ]; then
-		mount /dev/mapper/ventoy /mnt/iso
-	elif [ -b /dev/disk/by-label/CAMBRIA* ]; then
-		mount /dev/disk/by-label/CAMBRIA* /mnt/iso
-	fi
-}
+#mount_iso() {
+#	mkdir -p /mnt/iso
+#	if [ -b /dev/mapper/ventoy ]; then
+#		mount /dev/mapper/ventoy /mnt/iso
+#	elif [ -b /dev/disk/by-label/ISOIMAGE* ]; then
+#		mount /dev/disk/by-label/ISOIMAGE* /mnt/iso
+#	fi
+#}
 
 showkeymap() {
 	if [ -d /usr/share/kbd/keymaps ]; then
@@ -236,7 +236,9 @@ clear
 
 gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || exit_ "Installation aborted, exiting."
 
-gum spin -s pulse --show_output --title="Please wait while the script is doing the install for you :D" /usr/bin/system_install
+#gum spin -s pulse --show_output --title="Please wait while the script is doing the install for you :D" /usr/bin/system_install
+
+/usr/bin/system_install
 
 clear
 
