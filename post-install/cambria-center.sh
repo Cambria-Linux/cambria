@@ -22,11 +22,14 @@ if [ "$XDG_CURRENT_DESKTOP" == "KDE" ] && [ "${#processes[@]}" == "1" ]; then
 	exit
 fi
 
-if [ "$UID" != "0" ]; then
-	print_info "You're not running cambria-center as root... Please type root password here."
-	su -c "cambria-center"
-	exit
-fi
+check_root() {
+	if [ "$UID" != "0" ]; then
+		print_info "You're not running cambria-center as root... Please type root password here."
+		su -c "cambria-center" || check_root
+		exit
+	fi
+}
+check_root
 
 gum_menu() {
 	i=1
