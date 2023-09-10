@@ -51,7 +51,7 @@ configure_aliases() {
 	echo "alias cambria-install=\"emerge -aq\"" >>/etc/bash/bashrc
 	cat <<EOF > /usr/bin/cambria-delete
 #!/bin/bash
-emerge --deselect $@ && emerge --depclean
+emerge --deselect \$@ && emerge --depclean
 EOF
 	cat <<EOF > /usr/bin/cambria-update
 #!/bin/bash
