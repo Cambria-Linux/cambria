@@ -245,6 +245,11 @@ country=$(echo $listc | tr ' ' '\n' | gum filter --header "Choose a city:")
 rm -f /mnt/gentoo/etc/localtime
 ln -s /usr/share/zoneinfo/$location/$country /mnt/gentoo/etc/localtime
 
+# VM Max Map Count
+cat <<EOF > /mnt/gentoo/etc/sysctl.conf
+vm.max_map_count=1048576
+EOF
+
 cat <<EOF | chroot /mnt/gentoo
 su $USERNAME -c "cd /home/$USERNAME && LANG=$LOCALE.UTF-8 xdg-user-dirs-update"
 EOF
