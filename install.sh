@@ -7,6 +7,65 @@ set -e
 # Cambria Linux install script
 #===================================================
 
+# Create system_install script to allow the usage of 'gum spin'.
+cat << EOMF > system_install.sh
+#!/usr/bin/env bash
+
+# Mount root partition
+mkfs.ext4 -F \$ROOT_PART &>/dev/null
+mkdir -p /mnt/gentoo
+mount \$ROOT_PART /mnt/gentoo
+
+# Copy stage archive
+cp \$FILE /mnt/gentoo
+
+# Extract stage archive
+cd /mnt/gentoo
+tar xpf \$FILE --xattrs-include='*.*' --numeric-owner
+
+# Mount UEFI partition
+mkfs.vfat \$UEFI_PART &>/dev/null
+mkdir -p /mnt/gentoo/boot/efi
+mount \$UEFI_PART /mnt/gentoo/boot/efi
+
+mkswap \$SWAP_PART
+
+echo "UUID=\$(blkid -o value -s UUID "\$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "\$ROOT_PART") / \$(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "\$SWAP_PART") swap swap pri=1 0 0" >>/mnt/gentoo/etc/fstab
+
+# Keymap configuration
+echo "KEYMAP=\$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
+
+# Execute installation stuff
+mount --types proc /proc /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --make-rslave /mnt/gentoo/sys
+mount --rbind /dev /mnt/gentoo/dev
+mount --make-rslave /mnt/gentoo/dev
+mount --bind /run /mnt/gentoo/run
+mount --make-slave /mnt/gentoo/run
+
+cat <<EOF | chroot /mnt/gentoo
+grub-install --efi-directory=/boot/efi
+grub-mkconfig -o /boot/grub/grub.cfg
+systemd-machine-id-setup
+useradd -m -G users,wheel,audio,video,input -s /bin/bash \$USERNAME
+echo -e "\${USER_PASSWORD}\n\${USER_PASSWORD}" | passwd -q \$USERNAME
+echo -e "\${ROOT_PASSWORD}\n\${ROOT_PASSWORD}" | passwd -q
+systemctl preset-all --preset-mode=enable-only
+EOF
+
+rm /mnt/gentoo/\$(basename \$FILE)
+EOMF
+
+chmod +x system_install.sh
+
+exit_() {
+    echo $1
+    exit
+}
+
 #mount_iso() {
 #	mkdir -p /mnt/iso
 #	if [ -b /dev/mapper/ventoy ]; then
@@ -18,230 +77,89 @@ set -e
 
 showkeymap() {
 	if [ -d /usr/share/kbd/keymaps ]; then
-		find /usr/share/kbd/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sort
+		find /usr/share/kbd/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sed '/include\//d' | sort
 	else
-		find /usr/share/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sort
+		find /usr/share/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sed '/include\//d' | sort
 	fi
 }
 
 root_password() {
 	echo "Root account configuration:"
 	echo ""
-	printf "What will be the root account password ? (input is hidden) "
-	read -s ROOT_PASSWORD
+	ROOT_PASSWORD=$(gum input --password --placeholder="Enter root password")
 }
 
 user_account() {
 	echo "User account creation: "
 	echo ""
-	read -p "What will be your username ? " USERNAME
-	printf "What will be your password (input is hidden) ? "
-	read -s USER_PASSWORD
+    USERNAME=$(gum input --placeholder="Enter username")
+    USER_PASSWORD=$(gum input --password --placeholder "Enter $USERNAME's password")
 }
 
 stage_selection() {
+	echo "STAGE SELECTION:"
+	echo ""
 	ARCHIVES=/mnt/cdrom/*.tar.xz
-	if [ "${#ARCHIVES[@]}" == "1" ]; then
-		FILE=${ARCHIVES[0]}
-	else
-		echo "ARCHIVE SELECTION:"
-		i=1
-		
-		for file in $ARCHIVES; do
-			echo "[$i] $file"
-			i=$((i + 1))
-		done
-		echo ""
-		read -p "Your choice: " CHOICE
-
-		i=1
-		for file in /mnt/cdrom/*.tar.xz; do
-			if [ "$CHOICE" == "$i" ]; then
-				FILE=$file
-			fi
-			i=$((i + 1))
-		done
-
-		if [ -z $FILE ]; then
-			clear
-			stage_selection
-		fi
-	fi
+	FILE=$(gum choose --header="Select the wanted stage:" $ARCHIVES)
 }
 
 disk_selection() {
 	echo "Disk selection:"
-	i=1
-	for disk in $(lsblk -dp | grep -o '^/dev[^ ]*'); do
-		echo "[$i] $disk"
-		i=$((i + 1))
-	done
-
 	echo ""
-	read -p "Your choice: " CHOICE
-
-	i=1
-	for disk in $(lsblk -dp | grep -o '^/dev[^ ]*'); do
-		if [ "$i" == "$CHOICE" ]; then
-			DISK=$disk
-		fi
-		i=$((i + 1))
-	done
-
-	if [ "$DISK" == "" ]; then
-		clear
-		disk_selection
-	fi
+    disks=$(lsblk -dp | grep -o '^/dev[^ ]*')
+    DISK=$(gum choose --header="Select the disk to install Cambria into:" $disks)
 }
 
 root_part_selection() {
-	parts=$(ls $DISK* | grep "$DISK.*")
+	parts=$(ls $DISK* | grep "$DISK.*" | tail -n +2)
 	echo "Root partition selection:"
 	echo ""
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		echo "[$i] $part"
-		i=$((i + 1))
-	done
-
-	echo ""
-	read -p "Your choice: " CHOICE
-
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		if [ "$i" == "$CHOICE" ]; then
-			ROOT_PART=$part
-		fi
-		i=$((i + 1))
-	done
-
-	if [ "$ROOT_PART" == "" ]; then
-		clear
-		root_part_selection
-	fi
+    ROOT_PART=$(gum choose --header="Select the root partition: (/)" $parts)
 }
 
 uefi_part_selection() {
-	parts=$(ls $DISK* | grep "$DISK.*")
+	not_parsed_parts=$(ls $DISK* | grep "$DISK.*" | tail -n +2)
+	
+	parts=""
+	for part in $not_parsed_parts; do
+		[ "$part" != "$ROOT_PART" ] && parts+="$part "
+	done
+	
 	echo "UEFI partition selection:"
 	echo ""
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
+    UEFI_PART=$(gum choose --header="Select the efi partiton: (/boot/efi)" $parts)
 
-		if [ "$part" == "$ROOT_PART" ]; then
-			continue
-		fi
-
-		echo "[$i] $part"
-		i=$((i + 1))
-	done
-
-	echo ""
-	read -p "Your choice: " CHOICE
-
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		if [ "$part" == "$ROOT_PART" ]; then
-			continue
-		fi
-
-		if [ "$i" == "$CHOICE" ]; then
-			UEFI_PART=$part
-		fi
-
-		i=$((i + 1))
-	done
-
-	if [ "$UEFI_PART" == "" ]; then
-		clear
-		uefi_part_selection
-	fi
+    if [ "$UEFI_PART" == "$ROOT_PART" ]; then
+        echo "UEFI partition can't be the same as the root partition!"
+        uefi_part_selection
+    fi
 }
 
 swap_part_selection() {
-	parts=$(ls $DISK* | grep "$DISK.*")
+	not_parsed_parts=$(ls $DISK* | grep "$DISK.*" | tail -n +2)
+	
+	parts=""
+	for part in $not_parsed_parts; do
+		[ "$part" != "$ROOT_PART" ] && [ "$part" != "$UEFI_PART" ] && parts+="$part "
+	done
+
 	echo "SWAP partition selection:"
 	echo ""
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
-			continue
-		fi
-
-		echo "[$i] $part"
-		i=$((i + 1))
-	done
-
-	echo ""
-	read -p "Your choice: " CHOICE
-
-	i=0
-	for part in $parts; do
-		if [ "$i" == "0" ]; then
-			i=$((i + 1))
-			continue
-		fi
-
-		if [ "$part" == "$ROOT_PART" ] || [ "$part" == "$UEFI_PART" ]; then
-			continue
-		fi
-
-		if [ "$i" == "$CHOICE" ]; then
-			SWAP_PART=$part
-		fi
-
-		i=$((i + 1))
-	done
-
-	if [ "$SWAP_PART" == "" ]; then
-		clear
+	SWAP_PART=$(gum choose --header="Select the swap partition:" $parts)
+	if [ "$part" == "$ROOT_PART" ]; then
+		echo "SWAP partition can't be the same as the root partition!"
+		swap_part_selection
+	elif [ "$part" == "$UEFI_PART" ]; then
+		echo "SWAP partition can't be the same as the efi partition!"
 		swap_part_selection
 	fi
 }
 
 config_keymap() {
 	unset KEYMAP keymappart
-	while [ ! "$keymappart" ]; do
-		clear
-		read -p "Enter part of your keymap (Eg: us,fr): " input
-		keymappart=$(showkeymap | grep $input) || true
-	done
-	while [ ! "$KEYMAP" ]; do
-		clear
-		count=0
-		for i in $keymappart; do
-			count=$((count + 1))
-			echo "[$count] $i"
-		done
-		read -p "Enter keymap [1-$count]: " input
-		[ "$input" = 0 ] && continue
-		[ "$input" -gt "$count" ] && continue
-		KEYMAP=$(echo $keymappart | tr ' ' '\n' | head -n$input | tail -n1)
-	done
+	echo "Keymap selection:"
+	echo ""
+	keymappart=$(showkeymap | gum filter --placeholder="Enter and find your keymap...")
 }
 
 echo "========================================================================"
@@ -254,14 +172,11 @@ echo ""
 echo "Let's start !"
 echo ""
 
-read -p "Ready ? (Y/N) " READY
-
-if [ "$READY" != "Y" ] && [ "$READY" != "y" ]; then
-	exit
-fi
+gum confirm "Ready?" || exit_ "See you next time!"
 
 echo ""
 
+clear
 stage_selection
 clear
 disk_selection
@@ -280,60 +195,10 @@ clear
 config_keymap
 clear
 
-echo "Please wait while the script is doing the install for you :D"
+gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || exit_ "Installation aborted, exiting."
 
-# Mount root partition
-mkfs.ext4 -F $ROOT_PART &>/dev/null
-mkdir -p /mnt/gentoo
-mount $ROOT_PART /mnt/gentoo
+gum spin -s pulse --show-output --title="Please wait while the script is doing the install for you :D" /usr/bin/env ROOT_PART=$ROOT_PART UEFI_PART=$UEFI_PART KEYMAP=$KEYMAP USERNAME=$USERNAME USER_PASSWORD=$USER_PASSWORD ROOT_PASSWORD=$ROOT_PASSWORD FILE=$FILE SWAP_PART=$SWAP_PART bash ./system_install.sh
 
-# Copy stage archive
-cp $FILE /mnt/gentoo
-
-# Extract stage archive
-cd /mnt/gentoo
-tar xpf $FILE --xattrs-include='*.*' --numeric-owner
-
-# Mount UEFI partition
-mkfs.vfat $UEFI_PART &>/dev/null
-mkdir -p /mnt/gentoo/boot/efi
-mount $UEFI_PART /mnt/gentoo/boot/efi
-
-mkswap $SWAP_PART
-
-echo "UUID=$(blkid -o value -s UUID "$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
-echo "UUID=$(blkid -o value -s UUID "$ROOT_PART") / $(lsblk -nrp -o FSTYPE $ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
-echo "UUID=$(blkid -o value -s UUID "$SWAP_PART") swap swap pri=1 0 0" >>/mnt/gentoo/etc/fstab
-
-# Keymap configuration
-echo "KEYMAP=$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
-
-# Execute installation stuff
-mount --types proc /proc /mnt/gentoo/proc
-mount --rbind /sys /mnt/gentoo/sys
-mount --make-rslave /mnt/gentoo/sys
-mount --rbind /dev /mnt/gentoo/dev
-mount --make-rslave /mnt/gentoo/dev
-mount --bind /run /mnt/gentoo/run
-mount --make-slave /mnt/gentoo/run
-
-cat <<EOF | chroot /mnt/gentoo
-grub-install --efi-directory=/boot/efi
-grub-mkconfig -o /boot/grub/grub.cfg
-systemd-machine-id-setup
-useradd -m -G users,wheel,audio,video,input -s /bin/bash $USERNAME
-echo -e "${USER_PASSWORD}\n${USER_PASSWORD}" | passwd -q $USERNAME
-echo -e "${ROOT_PASSWORD}\n${ROOT_PASSWORD}" | passwd -q
-systemctl preset-all --preset-mode=enable-only
-EOF
-
-rm /mnt/gentoo/$(basename $FILE)
-cp /usr/bin/cambria-center /mnt/gentoo/usr/bin/
-
-mkdir -p /mnt/gentoo/etc/xdg/autostart
-cp /etc/xdg/autostart/cambria-center.desktop /mnt/gentoo/etc/xdg/autostart/
-
-echo ""
 clear
 
 # Locale configuration
