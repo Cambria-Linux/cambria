@@ -7,17 +7,8 @@ set -e
 # Cambria Linux install script
 #===================================================
 
-# Check if gum is installed
-if [ ! -f /usr/bin/gum ]; then
-    wget https://github.com/charmbracelet/gum/releases/download/v0.11.0/gum_0.11.0_Linux_x86_64.tar.gz
-    tar -xf gum_*.tar.gz gum
-    cp gum /usr/bin/gum
-    rm gum*
-    clear
-fi
-
 # Create system_install script to allow the usage of 'gum spin'.
-cat << EOMF > /usr/bin/system_install
+cat << EOMF > system_install.sh
 #!/usr/bin/env bash
 
 # Mount root partition
@@ -37,8 +28,11 @@ mkfs.vfat \$UEFI_PART &>/dev/null
 mkdir -p /mnt/gentoo/boot/efi
 mount \$UEFI_PART /mnt/gentoo/boot/efi
 
+mkswap \$SWAP_PART
+
 echo "UUID=\$(blkid -o value -s UUID "\$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
-echo "UUID=\$(blkid -o value -s UUID "\$ROOT_PART") / $(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "\$ROOT_PART") / \$(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
+echo "UUID=\$(blkid -o value -s UUID "\$SWAP_PART") swap swap pri=1 0 0" >>/mnt/gentoo/etc/fstab
 
 # Keymap configuration
 echo "KEYMAP=\$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
@@ -65,7 +59,7 @@ EOF
 rm /mnt/gentoo/\$(basename \$FILE)
 EOMF
 
-chmod +x /usr/bin/system_install
+chmod +x system_install.sh
 
 exit_() {
     echo $1
@@ -83,9 +77,9 @@ exit_() {
 
 showkeymap() {
 	if [ -d /usr/share/kbd/keymaps ]; then
-		find /usr/share/kbd/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sort
+		find /usr/share/kbd/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sed '/include\//d' | sort
 	else
-		find /usr/share/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sort
+		find /usr/share/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sed '/include\//d' | sort
 	fi
 }
 
@@ -117,14 +111,20 @@ disk_selection() {
 }
 
 root_part_selection() {
-	parts=$(ls $DISK* | grep "$DISK.*")
+	parts=$(ls $DISK* | grep "$DISK.*" | tail -n +2)
 	echo "Root partition selection:"
 	echo ""
     ROOT_PART=$(gum choose --header="Select the root partition: (/)" $parts)
 }
 
 uefi_part_selection() {
-	parts=$(ls $DISK* | grep "$DISK.*")
+	not_parsed_parts=$(ls $DISK* | grep "$DISK.*" | tail -n +2)
+	
+	parts=""
+	for part in $not_parsed_parts; do
+		[ "$part" != "$ROOT_PART" ] && parts+="$part "
+	done
+	
 	echo "UEFI partition selection:"
 	echo ""
     UEFI_PART=$(gum choose --header="Select the efi partiton: (/boot/efi)" $parts)
@@ -136,7 +136,13 @@ uefi_part_selection() {
 }
 
 swap_part_selection() {
-	parts=$(ls $DISK* | grep "$DISK.*")
+	not_parsed_parts=$(ls $DISK* | grep "$DISK.*" | tail -n +2)
+	
+	parts=""
+	for part in $not_parsed_parts; do
+		[ "$part" != "$ROOT_PART" ] && [ "$part" != "$UEFI_PART" ] && parts+="$part "
+	done
+
 	echo "SWAP partition selection:"
 	echo ""
 	SWAP_PART=$(gum choose --header="Select the swap partition:" $parts)
@@ -144,7 +150,7 @@ swap_part_selection() {
 		echo "SWAP partition can't be the same as the root partition!"
 		swap_part_selection
 	elif [ "$part" == "$UEFI_PART" ]; then
-		echo "SWAP partition can't be the same as the efi partition!
+		echo "SWAP partition can't be the same as the efi partition!"
 		swap_part_selection
 	fi
 }
@@ -170,6 +176,7 @@ gum confirm "Ready?" || exit_ "See you next time!"
 
 echo ""
 
+clear
 stage_selection
 clear
 disk_selection
@@ -190,9 +197,7 @@ clear
 
 gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || exit_ "Installation aborted, exiting."
 
-#gum spin -s pulse --show_output --title="Please wait while the script is doing the install for you :D" /usr/bin/system_install
-
-/usr/bin/system_install
+gum spin -s pulse --show-output --title="Please wait while the script is doing the install for you :D" /usr/bin/env ROOT_PART=$ROOT_PART UEFI_PART=$UEFI_PART KEYMAP=$KEYMAP USERNAME=$USERNAME USER_PASSWORD=$USER_PASSWORD ROOT_PASSWORD=$ROOT_PASSWORD FILE=$FILE SWAP_PART=$SWAP_PART bash ./system_install.sh
 
 clear
 
