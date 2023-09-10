@@ -35,7 +35,7 @@ rm -rf /etc/portage/package.use/*
 
 EOF
 
-    echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
+    echo "x11-libs/libdrm video_cards_intel video_cards_radeon" >>etc/portage/package.use/libdrm
     echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
     echo "net-dns/avahi -gtk -qt5 mdnsresponder-compat" >>etc/portage/package.use/avahi
 	echo "net-wireless/wpa_supplicant -qt5" >>etc/portage/package.use/wpa_supplicant
