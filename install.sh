@@ -100,7 +100,11 @@ stage_selection() {
 	echo "STAGE SELECTION:"
 	echo ""
 	ARCHIVES=/mnt/cdrom/*.tar.xz
-	FILE=$(gum choose --header="Select the wanted stage:" $ARCHIVES)
+	if [ "${#ARCHIVES[@]}" == "1" ]; then
+		FILE=${ARCHIVES[0]}
+	else
+		FILE=$(gum choose --header="Select the wanted stage:" ${ARCHIVES[@]})
+	fi
 }
 
 disk_selection() {
@@ -244,6 +248,11 @@ done
 country=$(echo $listc | tr ' ' '\n' | gum filter --header "Choose a city:")
 rm -f /mnt/gentoo/etc/localtime
 ln -s /usr/share/zoneinfo/$location/$country /mnt/gentoo/etc/localtime
+
+cp /usr/bin/cambria-center /mnt/gentoo/usr/bin/
+
+mkdir -p /mnt/gentoo/etc/xdg/autostart
+cp /etc/xdg/autostart/cambria-center.desktop /mnt/gentoo/etc/xdg/autostart/
 
 # VM Max Map Count
 cat <<EOF > /mnt/gentoo/etc/sysctl.conf
