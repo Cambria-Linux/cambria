@@ -137,7 +137,7 @@ automatic_partitioning() {
 	SFDISK_CONFIG+="${DISK_P}3: type=linux
 	"
 
-	echo "$SFDISK_CONFIG" | sfdisk $DISK
+	echo "$SFDISK_CONFIG" | sfdisk --force --no-reread $DISK
 
 	UEFI_PART="${DISK_P}1"
 	SWAP_PART="${DISK_P}2"
