@@ -55,7 +55,8 @@ emerge --deselect \$@ && emerge --depclean
 EOF
 	cat <<EOF > /usr/bin/cambria-update
 #!/bin/bash
-eix-sync && emerge -avuDN @world && flatpak update
+eix-sync && emerge -avuDN @world
+flatpak update
 EOF
 
 	cat <<EOF > /usr/bin/cambria-update-sleep
