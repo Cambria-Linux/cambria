@@ -106,7 +106,7 @@ stage_selection() {
 disk_selection() {
 	echo "Disk selection:"
 	echo ""
-    disks=$(lsblk -o NAME,SIZE,MODEL -d -p | tail -n +2)
+    disks=$(lsblk -o NAME,SIZE,MODEL -d -p | grep -v "loop0" | grep -v "sr0" | grep -v "zram0" | tail -n +2)
     DISK=$(echo "$disks" | gum choose --header="Select the disk to install Cambria into:" | cut -d ' ' -f 1)
 }
 
