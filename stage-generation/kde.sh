@@ -57,15 +57,15 @@ EOF
     echo "media-video/v4l2loopback ~amd64" >> etc/portage/package.accept_keywords/v4l2loopback
     echo "app-emulation/wine-gecko ~amd64" >> etc/portage/package.accept_keywords/wine
     echo "app-emulation/wine-mono ~amd64" >> etc/portage/package.accept_keywords/wine
-#    echo "dev-python/pypresence ~amd64" >> etc/portage/package.accept_keywords/lutris
-#    echo "dev-python/moddb ~amd64" >> etc/portage/package.accept_keywords/lutris
-#    echo "dev-python/pyrate-limiter ~amd64" >> etc/portage/package.accept_keywords/lutris
-#    echo "games-util/lutris ~amd64" >> etc/portage/package.accept_keywords/lutris
-#    echo "games-util/steam-meta ~amd64" >> etc/portage/package.accept_keywords/steam
-#    echo "games-util/steam-launcher ~amd64" >> etc/portage/package.accept_keywords/steam
-#    echo "games-util/steam-client-meta ~amd64" >> etc/portage/package.accept_keywords/steam
-#    echo "sys-libs/libudev-compat ~amd64" >> etc/portage/package.accept_keywords/steam
-#    echo "games-util/game-device-udev-rules ~amd64" >> etc/portage/package.accept_keywords/steam
+    echo "dev-python/pypresence ~amd64" >> etc/portage/package.accept_keywords/lutris
+    echo "dev-python/moddb ~amd64" >> etc/portage/package.accept_keywords/lutris
+    echo "dev-python/pyrate-limiter ~amd64" >> etc/portage/package.accept_keywords/lutris
+    echo "games-util/lutris ~amd64" >> etc/portage/package.accept_keywords/lutris
+    echo "games-util/steam-meta ~amd64" >> etc/portage/package.accept_keywords/steam
+    echo "games-util/steam-launcher ~amd64" >> etc/portage/package.accept_keywords/steam
+    echo "games-util/steam-client-meta ~amd64" >> etc/portage/package.accept_keywords/steam
+    echo "sys-libs/libudev-compat ~amd64" >> etc/portage/package.accept_keywords/steam
+    echo "games-util/game-device-udev-rules ~amd64" >> etc/portage/package.accept_keywords/steam
 
 
     echo "x11-libs/libdrm video_cards_intel video_cards_radeon" >>etc/portage/package.use/libdrm
@@ -99,7 +99,7 @@ EOF
 emerge -quDN @world
 EOF
 
-    install_packages kde-plasma/plasma-meta sys-block/partitionmanager media-video/obs-studio kde-apps/kdenlive kde-apps/kate net-im/discord kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin app-emulation/wine-staging
+    install_packages kde-plasma/plasma-meta sys-block/partitionmanager media-video/obs-studio kde-apps/kdenlive kde-apps/kate net-im/discord kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin app-emulation/wine-staging games-util/game-device-udev-rules sys-libs/libudev-compat games-util/steam-client-meta games-util/steam-launcher games-util/steam-meta games-util/lutris app-office/libreoffice-bin
     enable_services sddm NetworkManager bluetooth avahi-daemon cups
 
     cat <<EOF | chroot .
