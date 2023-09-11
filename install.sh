@@ -18,6 +18,7 @@ mkdir -p /mnt/gentoo
 mount \$ROOT_PART /mnt/gentoo
 
 # Copy stage archive
+echo "Copying stage archive..."
 cp \$FILE /mnt/gentoo
 
 # Extract stage archive
