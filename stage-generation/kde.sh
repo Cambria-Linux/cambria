@@ -26,12 +26,20 @@ build() {
     print_success "Done !"
 
     print_info "Building $STAGE stage..."
-#    cat <<EOF >> etc/portage/repos.conf/eselect-repo.conf
-#[steam-overlay]
-#location = /var/db/repos/steam-overlay
-#sync-type = git
-#sync-uri = https://github.com/gentoo-mirror/steam-overlay.git
-#EOF
+
+rm -rf etc/portage/repos.conf/eselect-repo.conf
+
+    cat <<EOF >> etc/portage/repos.conf/eselect-repo.conf
+[gentoo]
+location = /var/db/repos/gentoo
+sync-type = git
+sync-uri = https://github.com/gentoo-mirror/gentoo.git
+
+[steam-overlay]
+location = /var/db/repos/steam-overlay
+sync-type = git
+sync-uri = https://github.com/gentoo-mirror/steam-overlay.git
+EOF
     setup_chroot
     cat <<EOF | chroot .
 
@@ -44,11 +52,11 @@ EOF
     echo "net-im/discord ~amd64" >>etc/portage/package.accept_keywords/discord
     echo "media-libs/mesa ~amd64" >>etc/portage/package.accept_keywords/mesa
     echo "sys-kernel/linux-firmware ~amd64" >> etc/portage/package.accept_keywords/linux-firmware
-#    echo "app-emulation/wine-staging ~amd64" >> etc/portage/package.accept_keywords/wine
+    echo "app-emulation/wine-staging ~amd64" >> etc/portage/package.accept_keywords/wine
     echo "media-video/obs-studio ~amd64" >> etc/portage/package.accept_keywords/obs
     echo "media-video/v4l2loopback ~amd64" >> etc/portage/package.accept_keywords/v4l2loopback
-#    echo "app-emulation/wine-gecko ~amd64" >> etc/portage/package.accept_keywords/wine
-#    echo "app-emulation/wine-mono ~amd64" >> etc/portage/package.accept_keywords/wine
+    echo "app-emulation/wine-gecko ~amd64" >> etc/portage/package.accept_keywords/wine
+    echo "app-emulation/wine-mono ~amd64" >> etc/portage/package.accept_keywords/wine
 #    echo "dev-python/pypresence ~amd64" >> etc/portage/package.accept_keywords/lutris
 #    echo "dev-python/moddb ~amd64" >> etc/portage/package.accept_keywords/lutris
 #    echo "dev-python/pyrate-limiter ~amd64" >> etc/portage/package.accept_keywords/lutris
@@ -91,7 +99,7 @@ EOF
 emerge -quDN @world
 EOF
 
-    install_packages kde-plasma/plasma-meta sys-block/partitionmanager media-video/obs-studio kde-apps/kdenlive kde-apps/kate net-im/discord kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin
+    install_packages kde-plasma/plasma-meta sys-block/partitionmanager media-video/obs-studio kde-apps/kdenlive kde-apps/kate net-im/discord kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin app-emulation/wine-staging
     enable_services sddm NetworkManager bluetooth avahi-daemon cups
 
     cat <<EOF | chroot .
