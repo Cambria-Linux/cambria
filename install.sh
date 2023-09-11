@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Add /root to the PATH in order to be able to add custom binaries to the LiveCD
+export PATH="$PATH:/root"
+
 # Exit on error
 set -e
 
@@ -12,32 +15,40 @@ cat << EOMF > system_install.sh
 #!/usr/bin/env bash
 
 # Mount root partition
+echo "Mounting root partition"
 mkfs.ext4 -F \$ROOT_PART &>/dev/null
 mkdir -p /mnt/gentoo
 mount \$ROOT_PART /mnt/gentoo
 
 # Copy stage archive
+echo "Copying stage archive..."
 cp \$FILE /mnt/gentoo
 
 # Extract stage archive
+echo "Extracting stage archive..."
 cd /mnt/gentoo
-tar xpf \$FILE --xattrs-include='*.*' --numeric-owner
+pv \$FILE | tar xJp --xattrs-include='*.*' --numeric-owner
 
 # Mount UEFI partition
+echo "Mounting UEFI partition..."
 mkfs.vfat \$UEFI_PART &>/dev/null
 mkdir -p /mnt/gentoo/boot/efi
 mount \$UEFI_PART /mnt/gentoo/boot/efi
 
+echo "Activating SWAP partition..."
 mkswap \$SWAP_PART
 
+echo "Creating fstab..."
 echo "UUID=\$(blkid -o value -s UUID "\$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
 echo "UUID=\$(blkid -o value -s UUID "\$ROOT_PART") / \$(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
 echo "UUID=\$(blkid -o value -s UUID "\$SWAP_PART") swap swap pri=1 0 0" >>/mnt/gentoo/etc/fstab
 
 # Keymap configuration
+echo "Configuring keymap..."
 echo "KEYMAP=\$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
 
 # Execute installation stuff
+echo "Chroot inside Cambria..."
 mount --types proc /proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
 mount --make-rslave /mnt/gentoo/sys
@@ -46,16 +57,22 @@ mount --make-rslave /mnt/gentoo/dev
 mount --bind /run /mnt/gentoo/run
 mount --make-slave /mnt/gentoo/run
 
+echo "Installing GRUB..."
 cat <<EOF | chroot /mnt/gentoo
 grub-install --efi-directory=/boot/efi
 grub-mkconfig -o /boot/grub/grub.cfg
-systemd-machine-id-setup
+EOF
+echo "Setting up hostname..."
+chroot /mnt/gentoo systemd-machine-id-setup
+echo "Setting up users..."
+cat <<EOF | chroot /mnt/gentoo
 useradd -m -G users,wheel,audio,video,input -s /bin/bash \$USERNAME
 echo -e "\${USER_PASSWORD}\n\${USER_PASSWORD}" | passwd -q \$USERNAME
 echo -e "\${ROOT_PASSWORD}\n\${ROOT_PASSWORD}" | passwd -q
 systemctl preset-all --preset-mode=enable-only
 EOF
 
+echo "Deleting stage archive..."
 rm /mnt/gentoo/\$(basename \$FILE)
 EOMF
 
