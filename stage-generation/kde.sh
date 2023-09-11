@@ -1,5 +1,5 @@
 #===================================================
-# The KDE stage generation script.
+# The KDE stage generation script. !!!!! WORK ONLY WITH SYSTEM-WIDE X32 !!!!!
 #===================================================
 
 OUTPUT=cambria-stage-kde
