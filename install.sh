@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Add /root to the PATH in order to be able to add custom binaries to the LiveCD
+export PATH="$PATH:/root"
+
 # Exit on error
 set -e
 
@@ -31,12 +34,13 @@ mkdir -p /mnt/gentoo
 mount \$ROOT_PART /mnt/gentoo
 
 # Copy stage archive
+echo "Copying stage archive..."
 cp \$FILE /mnt/gentoo
 
 # Extract stage archive
 eval_gettext "Extracting stage archive..."; echo
 cd /mnt/gentoo
-tar xpf \$FILE --xattrs-include='*.*' --numeric-owner
+pv \$FILE | tar xJp --xattrs-include='*.*' --numeric-owner
 
 # Mount UEFI partition
 eval_gettext "Mounting UEFI partition..."; echo

@@ -106,8 +106,9 @@ gen_iso() {
 		rm gum*
 
   		# We add the pv pipeline data viewer into the ISO
-    		ROOT="$PWD/squashfs-root" emerge sys-apps/pv
-      
+    		cp files/pv squashfs-root/usr/bin/pv
+		chmod +x squashfs-root/usr/bin/pv
+
 		rm -f squashfs-root/root/.bashrc
 		cat <<EOF >squashfs-root/root/.bashrc
 #!/bin/bash
