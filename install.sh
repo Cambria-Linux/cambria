@@ -75,6 +75,75 @@ exit_() {
 #	fi
 #}
 
+installation_mode_selection() {
+	case $(gum choose "Automatic" "Manual") in
+		"Automatic") automatic_install;;
+		"Manual") manual_install;;
+	esac
+}
+
+manual_install() {
+	stage_selection
+	clear
+	disk_selection
+	cfdisk $DISK
+	clear
+	root_part_selection
+	clear
+	uefi_part_selection
+	clear
+	swap_part_selection
+	clear
+	user_account
+	clear
+	root_password
+	clear
+	config_keymap
+	clear
+}
+
+automatic_install() {
+	stage_selection
+	clear
+	disk_selection
+	clear
+	automatic_partitioning
+	clear
+	user_account
+	clear
+	root_password
+	clear
+	config_keymap
+	clear
+}
+
+automatic_partitioning() {
+	[[ "$DISK" == *"nvme"* ]] && DISK_P="${DISK}p" || DISK_P="$DISK"
+
+	echo "Enter SWAP size in Gib:"
+	echo ""
+	SWAP_SIZE=$(gum input --placeholder="If not sure set to (CPU_threads*2) - ram_size + 1 only if the result is positive, else set to 1")
+
+	gum confirm "All content from $DISK will be loose, continue?" || exit_ "Exiting..."
+
+	SFDISK_CONFIG="label: gpt
+	"
+	SFDISK_CONFIG+="device: $DISK
+	"
+	SFDISK_CONFIG+="${DISK_P}1: size=256M,type=uefi
+	"
+	SFDISK_CONFIG+="${DISK_P}2: size=${SWAP_SIZE}G,type=swap
+	"
+	SFDISK_CONFIG+="${DISK_P}3: type=linux
+	"
+
+	echo "$SFDISK_CONFIG" | sfdisk --force --no-reread $DISK
+
+	UEFI_PART="${DISK_P}1"
+	SWAP_PART="${DISK_P}2"
+	ROOT_PART="${DISK_P}3"
+}
+
 showkeymap() {
 	if [ -d /usr/share/kbd/keymaps ]; then
 		find /usr/share/kbd/keymaps/ -type f -iname "*.map.gz" -printf "%f\n" | sed 's|.map.gz||g' | sed '/include\//d' | sort
@@ -168,24 +237,7 @@ gum confirm "Ready?" || exit_ "See you next time!"
 
 echo ""
 
-clear
-stage_selection
-clear
-disk_selection
-cfdisk $DISK
-clear
-root_part_selection
-clear
-uefi_part_selection
-clear
-swap_part_selection
-clear
-user_account
-clear
-root_password
-clear
-config_keymap
-clear
+installation_mode_selection
 
 gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || exit_ "Installation aborted, exiting."
 
