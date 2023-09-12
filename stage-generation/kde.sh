@@ -95,6 +95,8 @@ EOF
     echo "kde-apps/kdenlive designer share" >>etc/portage/package.use/kdenlive
     echo "x11-drivers/nvidia-drivers dist-kernel modules tools static-libs" >>etc/portage/package.use/nvidia
     echo "media-libs/libsdl2 haptic" >>etc/portage/package.use/libdsl2
+    echo "media-video/pipewire sound-server" >>etc/portage/package.use/pipewire
+	echo "media-sound/pulseaudio -daemon" >>etc/portage/package.use/pulseaudio
     cat <<EOF | chroot .
 emerge -quDN @world
 EOF
