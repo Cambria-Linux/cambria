@@ -62,10 +62,15 @@ emerge -quDN @world
 EOF
 
 	install_packages gnome-menus media-fonts/fonts-meta media-fonts/noto-emoji gnome-software sys-apps/flatpak gnome-browser-connector gnome-tweaks gnome-extra/mousetweaks evince gnome-contacts totem gnome-keyring gnome-text-editor gnome-calendar gnome-maps gnome-weather gnome-music cheese baobab gnome-disk-utility gnome-photos gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog sys-firmware/sof-firmware
-	enable_services gdm NetworkManager bluetooth avahi-daemon cups
+	enable_services nvidia-hibernate nvidia-resume nvidia-suspend gdm NetworkManager bluetooth avahi-daemon cups
 
 	cat <<EOF | chroot .
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+EOF
+
+	cat <<EOF > etc/modprobe.d/nvidia-wayland-gnome.conf
+options nvidia-drm modeset=1
+options nvidia NVreg_PreserveVideoMemoryAllocations=1
 EOF
 
 	wget https://github.com/lassekongo83/adw-gtk3/releases/download/v4.9/adw-gtk3v4-9.tar.xz
