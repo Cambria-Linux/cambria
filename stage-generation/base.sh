@@ -19,6 +19,9 @@ build() {
 
 	print_info "Writing portage configuration..."
 	USEFLAGS="x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
+	cat <<EOF > etc/portage/package.use/grub
+sys-boot/grub mount
+EOF
 	print_success "Done !"
 
 	print_info "Setting DNS info..."
@@ -33,7 +36,7 @@ emerge-webrsync
 emerge --sync --quiet
 emerge -quDN @world
 EOF
-	install_packages linux-firmware gentoo-kernel-bin grub cpuid2cpuflags sys-apps/mlocate genlop eix eselect-repository bash-completion sys-fs/dosfstools dev-vcs/git net-misc/dhcpcd net-wireless/iwd
+	install_packages linux-firmware gentoo-kernel-bin os-prober grub cpuid2cpuflags sys-apps/mlocate genlop eix eselect-repository bash-completion sys-fs/dosfstools dev-vcs/git net-misc/dhcpcd net-wireless/iwd
 	enable_services dhcpcd iwd
 	cat <<EOF | chroot .
 eselect repository remove gentoo
@@ -57,6 +60,10 @@ ID=cambria
 PRETTY_NAME="Cambria Linux"
 HOME_URL="https://cambria-linux.github.io/"
 VERSION_ID="1.0"
+EOF
+
+	cat <<EOF >> etc/default/grub
+GRUB_DISABLE_OS_PROBER=false
 EOF
 
 	wget https://github.com/charmbracelet/gum/releases/download/v0.11.0/gum_0.11.0_Linux_x86_64.tar.gz
