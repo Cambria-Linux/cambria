@@ -24,7 +24,7 @@ cp \$FILE /mnt/gentoo
 # Extract stage archive
 echo "Extracting stage archive..."
 cd /mnt/gentoo
-tar xpf \$FILE --xattrs-include='*.*' --numeric-owner
+pv \$FILE | tar xpf --xattrs-include='*.*' --numeric-owner
 
 # Mount UEFI partition
 echo "Mounting UEFI partition..."
