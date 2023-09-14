@@ -43,7 +43,7 @@ sync-type = git
 sync-uri = https://github.com/gentoo-mirror/steam-overlay.git
 EOF
 
-    cat <<EOF >> etc/portage/package.use/wine
+    cat <<EOF >> etc/portage/package.use/lib32
 x11-libs/libXcursor abi_x86_32
 x11-libs/libXfixes abi_x86_32
 x11-libs/libXi abi_x86_32
@@ -163,6 +163,8 @@ virtual/libelf abi_x86_32
 dev-libs/elfutils abi_x86_32
 media-plugins/gst-plugins-cdparanoia abi_x86_32
 media-sound/cdparanoia abi_x86_32
+sys-libs/libudev-compat abi_x86_32
+x11-drivers/nvidia-drivers abi_x86_32
 EOF
 
     setup_chroot
