@@ -99,8 +99,8 @@ EOF
 emerge -quDN @world
 EOF
 
-    install_packages kde-plasma/plasma-meta sys-block/partitionmanager media-video/obs-studio kde-apps/kdenlive kde-apps/kate net-im/discord kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin app-emulation/wine-staging games-util/game-device-udev-rules sys-libs/libudev-compat games-util/steam-client-meta games-util/steam-launcher games-util/steam-meta games-util/lutris app-office/libreoffice-bin app-portage/gentoolkit
-    enable_services sddm NetworkManager bluetooth avahi-daemon cups
+    install_packages kde-plasma/plasma-meta sys-block/partitionmanager media-video/obs-studio kde-apps/kdenlive kde-apps/kate net-im/discord kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin app-emulation/wine-staging games-util/game-device-udev-rules sys-libs/libudev-compat games-util/steam-client-meta games-util/steam-launcher games-util/steam-meta games-util/lutris app-office/libreoffice-bin app-portage/gentoolkit dev-util/vulkan-tools
+    enable_services sddm NetworkManager bluetooth avahi-daemon cups 
 
     cat <<EOF | chroot .
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
