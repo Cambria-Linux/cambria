@@ -28,6 +28,8 @@ build() {
     print_info "Building $STAGE stage..."
 
 rm -rf etc/portage/repos.conf/eselect-repo.conf
+rm -rf etc/portage/package.accept_keywords/*
+rm -rf etc/portage/package.use/*
 
     cat <<EOF >> etc/portage/repos.conf/eselect-repo.conf
 [gentoo]
@@ -40,13 +42,133 @@ location = /var/db/repos/steam-overlay
 sync-type = git
 sync-uri = https://github.com/gentoo-mirror/steam-overlay.git
 EOF
+
+    cat <<EOF >> etc/portage/package.use/wine
+x11-libs/libXcursor abi_x86_32
+x11-libs/libXfixes abi_x86_32
+x11-libs/libXi abi_x86_32
+x11-libs/libXrandr abi_x86_32
+x11-libs/libXrender abi_x86_32
+x11-libs/libXxf86vm abi_x86_32
+media-libs/libglvnd abi_x86_32
+x11-libs/libXcomposite abi_x86_32
+net-print/cups abi_x86_32
+media-libs/fontconfig abi_x86_32
+media-libs/libsdl2 abi_x86_32
+net-libs/gnutls abi_x86_32
+media-libs/freetype abi_x86_32
+sys-apps/dbus abi_x86_32
+media-libs/libv4l abi_x86_32
+media-libs/vulkan-loader abi_x86_32
+x11-libs/libX11 abi_x86_32
+x11-libs/libXext abi_x86_32
+media-libs/alsa-lib abi_x86_32
+dev-libs/glib abi_x86_32
+media-libs/gst-plugins-base abi_x86_32
+media-libs/gstreamer abi_x86_32
+media-libs/libpulse abi_x86_32
+sys-libs/libunwind abi_x86_32
+dev-libs/libusb abi_x86_32
+media-plugins/gst-plugins-dvdread abi_x86_32
+media-libs/gst-plugins-ugly abi_x86_32
+dev-libs/wayland abi_x86_32
+media-plugins/gst-plugins-meta abi_x86_32
+media-libs/gst-plugins-good abi_x86_32
+media-plugins/gst-plugins-a52dec abi_x86_32
+media-plugins/gst-plugins-faad abi_x86_32
+media-plugins/gst-plugins-dts abi_x86_32
+media-plugins/gst-plugins-mpeg2dec abi_x86_32
+media-plugins/gst-plugins-resindvd abi_x86_32
+media-plugins/gst-plugins-flac abi_x86_32
+media-plugins/gst-plugins-mpg123 abi_x86_32
+media-plugins/gst-plugins-pulse abi_x86_32
+media-plugins/gst-plugins-v4l2 abi_x86_32
+media-plugins/gst-plugins-vaapi abi_x86_32
+media-plugins/gst-plugins-x264 abi_x86_32
+media-libs/gst-plugins-bad abi_x86_32
+media-libs/x264 abi_x86_32
+media-libs/libva abi_x86_32
+x11-libs/libdrm abi_x86_32
+media-libs/mesa abi_x86_32
+sys-libs/zlib abi_x86_32
+dev-libs/expat abi_x86_32
+x11-libs/libxcb abi_x86_32
+x11-libs/libvdpau abi_x86_32
+x11-libs/libxshmfence abi_x86_32
+app-arch/zstd abi_x86_32
+sys-devel/llvm abi_x86_32
+dev-libs/libffi abi_x86_32
+sys-libs/ncurses abi_x86_32
+dev-libs/libxml2 abi_x86_32
+dev-libs/icu abi_x86_32
+x11-libs/libXau abi_x86_32
+x11-libs/libXdmcp abi_x86_32
+x11-libs/libpciaccess abi_x86_32
+app-arch/bzip2 abi_x86_32
+dev-lang/orc abi_x86_32
+dev-libs/libgudev abi_x86_32
+media-sound/mpg123 abi_x86_32
+media-libs/flac abi_x86_32
+media-libs/libogg abi_x86_32
+media-libs/libdvdnav abi_x86_32
+media-libs/libdvdread abi_x86_32
+media-libs/libdvdcss abi_x86_32
+media-libs/libmpeg2 abi_x86_32
+media-libs/libdca abi_x86_32
+media-libs/faad2 abi_x86_32
+media-libs/a52dec abi_x86_32
+media-libs/libsndfile abi_x86_32
+net-libs/libasyncns abi_x86_32
+sys-libs/libcap abi_x86_32
+sys-libs/pam abi_x86_32
+x11-libs/pango abi_x86_32
+media-libs/libvorbis abi_x86_32
+x11-libs/libXv abi_x86_32
+media-libs/graphene abi_x86_32
+media-libs/libpng abi_x86_32
+media-libs/libjpeg-turbo abi_x86_32
+dev-libs/fribidi abi_x86_32
+media-libs/harfbuzz abi_x86_32
+x11-libs/cairo abi_x86_32
+x11-libs/libXft abi_x86_32
+dev-libs/lzo abi_x86_32
+x11-libs/pixman abi_x86_32
+media-gfx/graphite2 abi_x86_32
+dev-libs/libpcre2 abi_x86_32
+sys-apps/util-linux abi_x86_32
+dev-libs/libtasn1 abi_x86_32
+dev-libs/libunistring abi_x86_32
+dev-libs/nettle abi_x86_32
+dev-libs/gmp abi_x86_32
+net-dns/libidn2 abi_x86_32
+media-video/pipewire abi_x86_32
+x11-libs/libxkbcommon abi_x86_32
+net-dns/avahi abi_x86_32
+dev-libs/libevent abi_x86_32
+sys-libs/gdbm abi_x86_32
+sys-libs/readline abi_x86_32
+dev-libs/openssl abi_x86_32
+virtual/libintl abi_x86_32
+virtual/libudev abi_x86_32
+sys-apps/systemd abi_x86_32
+dev-libs/libgcrypt abi_x86_32
+app-arch/lz4 abi_x86_32
+dev-libs/libgpg-error abi_x86_32
+virtual/libiconv abi_x86_32
+virtual/opengl abi_x86_32
+virtual/glu abi_x86_32
+media-libs/glu abi_x86_32
+virtual/jpeg abi_x86_32
+virtual/libelf abi_x86_32
+dev-libs/elfutils abi_x86_32
+media-plugins/gst-plugins-cdparanoia abi_x86_32
+media-sound/cdparanoia abi_x86_32
+EOF
+
     setup_chroot
     cat <<EOF | chroot .
 
 eix-sync
-
-rm -rf /etc/portage/package.accept_keywords/*
-rm -rf /etc/portage/package.use/*
 
 EOF
     echo "net-im/discord ~amd64" >>etc/portage/package.accept_keywords/discord
