@@ -31,8 +31,6 @@ configure_portage() {
 	echo "MAKEOPTS=\"-j$MAKEJOBS\"" >>etc/portage/make.conf
 	sed -i "/ACCEPT_LICENSE/d" etc/portage/make.conf
 	echo "ACCEPT_LICENSE=\"*\"" >>etc/portage/make.conf
-	sed -i "/ABI_X86/d" etc/portage/make.conf
-	echo "ABI_X86=\"32 64\"" >>etc/portage/make.conf	
 }
 
 enable_services() {
