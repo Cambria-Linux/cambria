@@ -18,7 +18,7 @@ build() {
     print_success "Done !"
 
     print_info "Writing portage configuration..."
-    USEFLAGS="vaapi amf kde cleartype corefonts nvenc matroska vdpau -gnome egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
+    USEFLAGS="vaapi mtp amf kde cleartype corefonts nvenc matroska vdpau -gnome egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
     print_success "Done !"
 
     print_info "Setting DNS info..."
@@ -50,8 +50,6 @@ rm -rf /etc/portage/package.use/*
 
 EOF
     echo "net-im/discord ~amd64" >>etc/portage/package.accept_keywords/discord
-    echo "media-libs/mesa ~amd64" >>etc/portage/package.accept_keywords/mesa
-    echo "sys-kernel/linux-firmware ~amd64" >> etc/portage/package.accept_keywords/linux-firmware
     echo "app-emulation/wine-staging ~amd64" >> etc/portage/package.accept_keywords/wine
     echo "media-video/obs-studio ~amd64" >> etc/portage/package.accept_keywords/obs
     echo "media-video/v4l2loopback ~amd64" >> etc/portage/package.accept_keywords/v4l2loopback
