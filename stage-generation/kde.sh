@@ -215,7 +215,7 @@ EOF
     echo "kde-frameworks/prison qml" >>etc/portage/package.use/prison
     echo "media-video/obs-studio browser nvenc decklink fdk jack lua python speex vlc websocket" >>etc/portage/package.use/obs
     echo "kde-apps/kdenlive designer share" >>etc/portage/package.use/kdenlive
-    echo "x11-drivers/nvidia-drivers dist-kernel modules tools static-libs" >>etc/portage/package.use/nvidia
+    echo "x11-drivers/nvidia-drivers modules tools" >>etc/portage/package.use/nvidia
     echo "media-libs/libsdl2 haptic" >>etc/portage/package.use/libdsl2
     echo "media-video/pipewire sound-server" >>etc/portage/package.use/pipewire
 	echo "media-sound/pulseaudio -daemon" >>etc/portage/package.use/pulseaudio
