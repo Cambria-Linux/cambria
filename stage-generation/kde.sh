@@ -18,7 +18,7 @@ build() {
     print_success "Done !"
 
     print_info "Writing portage configuration..."
-    USEFLAGS="vaapi mtp amf kde cleartype corefonts nvenc matroska vdpau -gnome egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
+    USEFLAGS="screencast vaapi mtp amf kde cleartype corefonts nvenc matroska vdpau -gnome egl X gles2 x264 x265 v4l grub zeroconf cups bluetooth vulkan pipewire wayland networkmanager pulseaudio" configure_portage
     print_success "Done !"
 
     print_info "Setting DNS info..."
