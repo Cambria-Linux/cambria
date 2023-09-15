@@ -3,6 +3,11 @@
 # Exit on error
 set -e
 
+SUPPORTED_LOCALES=(
+	fr_FR
+	en_US
+)
+
 #===================================================
 # Cambria Linux install script
 #===================================================
@@ -236,10 +241,17 @@ config_keymap() {
 	keymappart=$(showkeymap | gum filter --placeholder="Enter and find your keymap...")
 }
 
+locale_selection() {
+	export LOCALE=$(gum choose --header="Select the locale to use:" ${SUPPORTED_LOCALES[@]})
+}
+
 echo "========================================================================"
 echo "                     WELCOME ON CAMBRIA LINUX !                         "
 echo "========================================================================"
 echo ""
+
+locale_selection
+
 echo "This script is here to help you install our distro easily.              "
 echo "Let us guide you step-by-step and you'll have a fully working Gentoo !  "
 echo ""
@@ -249,7 +261,6 @@ echo ""
 gum confirm "Ready?" || exit_ "See you next time!"
 
 echo ""
-
 installation_mode_selection
 
 gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || exit_ "Installation aborted, exiting."
