@@ -1,0 +1,197 @@
+# Cambria Linux l10n files
+# Copyright (C) 2023
+# This file is distributed under the same license as the PACKAGE package.
+# Babilinx <babilinx/evx1o@simplelogin.com>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Cambria Linux 0.3\n"
+"Report-Msgid-Bugs-To: Cambria Linux Team on Github\n"
+"POT-Creation-Date: 2023-09-16 12:09+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: Bash; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: install.sh:149
+#, sh-format
+msgid "Enter SWAP size in Gib:"
+msgstr ""
+
+#: install.sh:151
+#, sh-format
+msgid ""
+"If not sure set to (CPU_threads*2) - ram_size + 1 only if the result is "
+"positive, else set to 1"
+msgstr ""
+
+#: install.sh:153
+#, sh-format
+msgid "All content from $DISK will be loose, continue?"
+msgstr ""
+
+#: install.sh:153
+#, sh-format
+msgid "Exiting..."
+msgstr ""
+
+#: install.sh:182
+#, sh-format
+msgid "Root account configuration:"
+msgstr ""
+
+#: install.sh:184
+#, sh-format
+msgid "Enter root password"
+msgstr ""
+
+#: install.sh:188
+#, sh-format
+msgid "User account creation:"
+msgstr ""
+
+#: install.sh:190
+#, sh-format
+msgid "Enter username"
+msgstr ""
+
+#: install.sh:191
+#, sh-format
+msgid "Enter $USERNAME's password"
+msgstr ""
+
+#: install.sh:195
+#, sh-format
+msgid "STAGE SELECTION:"
+msgstr ""
+
+#: install.sh:201
+#, sh-format
+msgid "Select the wanted stage:"
+msgstr ""
+
+#: install.sh:206
+#, sh-format
+msgid "Disk selection:"
+msgstr ""
+
+#: install.sh:209
+#, sh-format
+msgid "Select the disk to install Cambria into:"
+msgstr ""
+
+#: install.sh:214
+#, sh-format
+msgid "Root partition selection:"
+msgstr ""
+
+#: install.sh:216
+#, sh-format
+msgid "Select the root partition: (/)"
+msgstr ""
+
+#: install.sh:227
+#, sh-format
+msgid "UEFI partition selection:"
+msgstr ""
+
+#: install.sh:229
+#, sh-format
+msgid "Select the efi partiton: (/boot/efi)"
+msgstr ""
+
+#: install.sh:240
+#, sh-format
+msgid "SWAP partition selection:"
+msgstr ""
+
+#: install.sh:247
+#, sh-format
+msgid "Keymap selection:"
+msgstr ""
+
+#: install.sh:249
+#, sh-format
+msgid "Enter and find your keymap..."
+msgstr ""
+
+#: install.sh:253
+#, sh-format
+msgid "Select the locale to use:"
+msgstr ""
+
+#: install.sh:263
+#, sh-format
+msgid ""
+"This script is here to help you install our distro easily.              "
+msgstr ""
+
+#: install.sh:264
+#, sh-format
+msgid ""
+"Let us guide you step-by-step and you'll have a fully working Gentoo !  "
+msgstr ""
+
+#: install.sh:266
+#, sh-format
+msgid "Let's start !"
+msgstr ""
+
+#: install.sh:269
+#, sh-format
+msgid "Ready?"
+msgstr ""
+
+#: install.sh:269
+#, sh-format
+msgid "See you next time!"
+msgstr ""
+
+#: install.sh:274
+#, sh-format
+msgid "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!"
+msgstr ""
+
+#: install.sh:274
+#, sh-format
+msgid "Installation aborted, exiting."
+msgstr ""
+
+#: install.sh:276
+#, sh-format
+msgid "Please wait while the script is doing the install for you :D"
+msgstr ""
+
+#: install.sh:281
+#, sh-format
+msgid "Choose your locale:"
+msgstr ""
+
+#: install.sh:290
+#, sh-format
+msgid "Choose a X11 keymap:"
+msgstr ""
+
+#: install.sh:313
+#, sh-format
+msgid "Choose a location:"
+msgstr ""
+
+#: install.sh:320
+#, sh-format
+msgid "Choose a city:"
+msgstr ""
+
+#: install.sh:339
+#, sh-format
+msgid "Installation has finished !"
+msgstr ""
+
+#: install.sh:340
+#, sh-format
+msgid "Press R to reboot..."
+msgstr ""
