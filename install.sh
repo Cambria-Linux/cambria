@@ -5,6 +5,7 @@ set -e
 
 source /usr/bin/gettext.sh
 export TEXTDOMAIN="install"
+export TEXTDOMAINDIR="$PWD/po"
 
 SUPPORTED_LOCALES=(
 	fr_FR
