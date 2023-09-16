@@ -1,5 +1,9 @@
 #!/bin/bash
 
+source /usr/bin/gettext.sh
+export TEXTDOMAIN="cambria_center"
+export TEXTDOMAINDIR="$PWD/po"
+
 #===================================================
 # All-in-one script to manage post-install operations.
 #===================================================
@@ -24,7 +28,7 @@ fi
 
 check_root() {
 	if [ "$UID" != "0" ]; then
-		print_info "You're not running cambria-center as root... Please type root password here."
+		print_info "`eval_gettext \"You're not running cambria-center as root... Please type root password here.\"`"
 		su -c "cambria-center" || check_root
 		exit
 	fi
@@ -66,7 +70,7 @@ EOF
 
 	cat <<EOF > /usr/bin/cambria-kernel-testing
 #!/bin/bash
-echo "******Activation du noyau testing******"
+eval_gettext "******Activation of testing kernel******"; echo
 echo sys-kernel/gentoo-kernel-bin ~amd64 >> /etc/portage/package.accept_keywords/kernel
 echo virtual/dist-kernel ~amd64 >> /etc/portage/package.accept_keywords/kernel
 cambria-update
@@ -79,14 +83,24 @@ EOF
 }
 
 menu() {
-	gum_menu "Build jobs (VERY IMPORTANT)" "L10N Configuration (VERY IMPORTANT)" "CPU optimizer (takes a while)" "Clean VIDEO_CARDS (takes a while)" "Exit"
+    MENU_OPTIONS=(
+        "`eval_gettext \"Build jobs (VERY IMPORTANT)\"`"
+        "`eval_gettext \"L10N Configuration (VERY IMPORTANT)\"`"
+        "`eval_gettext \"CPU optimizer (takes a while)\"`"
+        "`eval_gettext \"Clean VIDEO_CARDS (takes a while)\"`"
+        "`eval_gettext \"Exit\"`"
+)
+
+    gum_menu ${MENU_OPTIONS[@]}
 
 	if [[ "$CHOICE" == "[1]"* ]]; then
 		clear
-		BUILD_JOBS=$(eval "gum choose --header \"Select a number of MAKE jobs\" {1..$(nproc)}")
+        MAKE_JOBS_LIST={1..$(nproc)}
+        EMERGE_JOBS_LIST={1..$(lscpu --all --parse=CORE,SOCKET | grep -Ev "^#" | sort -u | wc -l)}
+		BUILD_JOBS=$(gum choose --header "`eval_gettext \"Select a number of MAKE jobs\"`" ${MAKE_JOBS_LIST[@]})
 		sed -i "/MAKEOPTS/d" /etc/portage/make.conf
 		echo "MAKEOPTS=\"-j$BUILD_JOBS\"" >>/etc/portage/make.conf
-		EMERGE_JOBS=$(eval "gum choose --header \"Select a number of EMERGE jobs\" {1..$(lscpu --all --parse=CORE,SOCKET | grep -Ev "^#" | sort -u | wc -l)}")
+		EMERGE_JOBS=$(gum choose --header "`eval_gettext \"Select a number of EMERGE jobs\"`" ${EMERGE_JOBS_LIST[@]})
 		sed -i "/EMERGE_DEFAULT_OPTS/d" /etc/portage/make.conf
 		echo "EMERGE_DEFAULT_OPTS=\"--jobs $EMERGE_JOBS\"" >>/etc/portage/make.conf
 	fi
@@ -94,7 +108,7 @@ menu() {
 	if [[ "$CHOICE" == "[2]"* ]]; then
 		clear
 		L10N="af am ar as ast be bg bn bn-IN bo br brx bs ca ca-valencia ckb cs cy da de dgo dsb dz el en en-GB en-ZA eo es et eu fa fi fr fur fy ga gd gl gu gug he hi hr hsb hu id is it ja ka kab kk km kmr-Latn kn ko kok ks lb lo lt lv mai mk ml mn mni mr my nb ne nl nn nr nso oc om or pa pl pt pt-BR ro ru rw sa sat sd si sid sk sl sq sr sr-Latn ss st sv sw-TZ szl ta te tg th tn tr ts tt ug uk uz ve vec vi xh zh-CN zh-TW zu"
-		L10N_CONFIG=$(echo $L10N | tr ' ' '\n' | gum filter --header "What's your L10N config (usually similar to your country) ?")
+		L10N_CONFIG=$(echo $L10N | tr ' ' '\n' | gum filter --header "`eval_gettext \"What's your L10N config (usually similar to your country) ?\"`")
 		echo "L10N=\"$L10N_CONFIG\"" >>/etc/portage/make.conf
 		emerge -quDN @world
 	fi
@@ -108,7 +122,7 @@ menu() {
 
 	if [[ "$CHOICE" == "[4]"* ]]; then
 		clear
-		GPUS=$(gum choose --header "What GPU(s) do you have ?" "None" "Intel" "AMD" "NVIDIA" "NVIDIA (nouveau)" --no-limit)
+		GPUS=$(gum choose --header "`eval_gettext \"What GPU(s) do you have ?\"`" "None" "Intel" "AMD" "NVIDIA" "NVIDIA (nouveau)" --no-limit)
 		VIDEO_CARDS="fbdev vesa "
 		for gpu in $GPUS; do
 			if [ "$gpu" == "Intel" ]; then
