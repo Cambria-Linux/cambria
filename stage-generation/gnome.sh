@@ -59,7 +59,7 @@ EOF
 emerge -quDN @world
 EOF
 
-	install_packages gnome-menus media-fonts/fonts-meta media-fonts/noto-emoji gnome-software sys-apps/flatpak gnome-browser-connector gnome-tweaks gnome-extra/mousetweaks evince gnome-contacts totem gnome-keyring gnome-text-editor gnome-calendar gnome-maps gnome-weather gnome-music cheese baobab gnome-disk-utility gnome-photos gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog sys-firmware/sof-firmware
+	install_packages gnome-base/gnome-menus media-fonts/fonts-meta media-fonts/noto-emoji gnome-extra/gnome-software sys-apps/flatpak gnome-browser-connector gnome-tweaks gnome-extra/mousetweaks evince gnome-contacts media-video/vlc gnome-keyring gnome-text-editor gnome-calendar gnome-maps gnome-weather gnome-music cheese baobab gnome-disk-utility gnome-photos gjs gnome-control-center gnome-core-libs gnome-session gnome-settings-daemon gnome-shell gvfs nautilus cantarell gnome-console adwaita-icon-theme gnome-backgrounds gnome-themes-standard mutter firefox-bin thunderbird-bin eog sys-firmware/sof-firmware app-portage/gentoolkit
 	enable_services nvidia-hibernate nvidia-resume nvidia-suspend gdm NetworkManager bluetooth avahi-daemon cups
 
 	cat <<EOF | chroot .
