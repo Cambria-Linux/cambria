@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -e
+
 source /usr/bin/gettext.sh
 export TEXTDOMAIN="cambria_center"
 export TEXTDOMAINDIR="$PWD/po"
@@ -83,15 +85,11 @@ EOF
 }
 
 menu() {
-    MENU_OPTIONS=(
-        "`eval_gettext \"Build jobs (VERY IMPORTANT)\"`"
-        "`eval_gettext \"L10N Configuration (VERY IMPORTANT)\"`"
-        "`eval_gettext \"CPU optimizer (takes a while)\"`"
-        "`eval_gettext \"Clean VIDEO_CARDS (takes a while)\"`"
+    gum_menu "`eval_gettext \"Build jobs (VERY IMPORTANT)\"`" \
+        "`eval_gettext \"L10N Configuration (VERY IMPORTANT)\"`" \
+        "`eval_gettext \"CPU optimizer (takes a while)\"`" \
+        "`eval_gettext \"Clean VIDEO_CARDS (takes a while)\"`" \
         "`eval_gettext \"Exit\"`"
-)
-
-    gum_menu ${MENU_OPTIONS[@]}
 
 	if [[ "$CHOICE" == "[1]"* ]]; then
 		clear
