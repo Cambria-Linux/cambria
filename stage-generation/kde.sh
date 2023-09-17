@@ -35,7 +35,7 @@ rm -rf /etc/portage/package.use/*
 
 EOF
 
-    echo "x11-libs/libdrm video_cards_intel" >>etc/portage/package.use/libdrm
+    echo "x11-libs/libdrm video_cards_intel video_cards_radeon" >>etc/portage/package.use/libdrm
     echo "media-libs/libsndfile minimal" >>etc/portage/package.use/libsndfile
     echo "net-dns/avahi -gtk -qt5 mdnsresponder-compat" >>etc/portage/package.use/avahi
 	echo "net-wireless/wpa_supplicant -qt5" >>etc/portage/package.use/wpa_supplicant
@@ -65,7 +65,7 @@ EOF
 emerge -quDN @world
 EOF
 
-    install_packages kde-plasma/plasma-meta sys-block/partitionmanager kde-apps/kate kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin sys-firmware/sof-firmware
+    install_packages kde-plasma/plasma-meta sys-block/partitionmanager kde-apps/kate kde-apps/konsole kde-apps/okular kde-apps/dolphin sys-libs/kpmcore kde-apps/gwenview kde-apps/ark kde-apps/kcalc kde-misc/kweather kde-apps/print-manager kde-apps/spectacle www-client/firefox-bin mail-client/thunderbird-bin sys-firmware/sof-firmware app-portage/gentoolkit
     enable_services sddm NetworkManager bluetooth avahi-daemon cups
 
     cat <<EOF | chroot .
