@@ -104,6 +104,10 @@ gen_iso() {
 		tar -xf gum_*.tar.gz gum
 		cp gum squashfs-root/usr/bin/gum
 		rm gum*
+
+  		# We add the pv pipeline data viewer into the ISO
+    		ROOT="$PWD/squashfs-root" emerge sys-apps/pv
+      
 		rm -f squashfs-root/root/.bashrc
 		cat <<EOF >squashfs-root/root/.bashrc
 #!/bin/bash
