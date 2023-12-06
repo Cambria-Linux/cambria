@@ -6,6 +6,15 @@ export PATH="$PATH:/root"
 # Exit on error
 set -e
 
+source /usr/bin/gettext.sh
+export TEXTDOMAIN="install"
+export TEXTDOMAINDIR="$PWD/po"
+
+SUPPORTED_LOCALES=(
+	fr_FR
+	en_US
+)
+
 #===================================================
 # Cambria Linux install script
 #===================================================
@@ -14,8 +23,12 @@ set -e
 cat << EOMF > system_install.sh
 #!/usr/bin/env bash
 
+source /usr/bin/gettext.sh
+export TEXTDOMAIN="system_install"
+export TEXTDOMAINDIR="$PWD/po"
+
 # Mount root partition
-echo "Mounting root partition"
+eval_gettext "Mounting root partition"; echo
 mkfs.ext4 -F \$ROOT_PART &>/dev/null
 mkdir -p /mnt/gentoo
 mount \$ROOT_PART /mnt/gentoo
@@ -25,30 +38,30 @@ echo "Copying stage archive..."
 cp \$FILE /mnt/gentoo
 
 # Extract stage archive
-echo "Extracting stage archive..."
+eval_gettext "Extracting stage archive..."; echo
 cd /mnt/gentoo
 pv \$FILE | tar xJp --xattrs-include='*.*' --numeric-owner
 
 # Mount UEFI partition
-echo "Mounting UEFI partition..."
+eval_gettext "Mounting UEFI partition..."; echo
 mkfs.vfat \$UEFI_PART &>/dev/null
 mkdir -p /mnt/gentoo/boot/efi
 mount \$UEFI_PART /mnt/gentoo/boot/efi
 
-echo "Activating SWAP partition..."
+eval_gettext "Activating SWAP partition..."; echo
 mkswap \$SWAP_PART
 
-echo "Creating fstab..."
+eval_gettext "Creating fstab..."; echo
 echo "UUID=\$(blkid -o value -s UUID "\$UEFI_PART") /boot/efi vfat defaults 0 2" >>/mnt/gentoo/etc/fstab
 echo "UUID=\$(blkid -o value -s UUID "\$ROOT_PART") / \$(lsblk -nrp -o FSTYPE \$ROOT_PART) defaults 1 1" >>/mnt/gentoo/etc/fstab
 echo "UUID=\$(blkid -o value -s UUID "\$SWAP_PART") swap swap pri=1 0 0" >>/mnt/gentoo/etc/fstab
 
 # Keymap configuration
-echo "Configuring keymap..."
+eval_gettext "Configuring keymap..."; echo
 echo "KEYMAP=\$KEYMAP" >/mnt/gentoo/etc/vconsole.conf
 
 # Execute installation stuff
-echo "Chroot inside Cambria..."
+eval_gettext "Chroot inside Cambria..."; echo
 mount --types proc /proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
 mount --make-rslave /mnt/gentoo/sys
@@ -57,14 +70,14 @@ mount --make-rslave /mnt/gentoo/dev
 mount --bind /run /mnt/gentoo/run
 mount --make-slave /mnt/gentoo/run
 
-echo "Installing GRUB..."
+eval_gettext "Installing GRUB..."; echo
 cat <<EOF | chroot /mnt/gentoo
 grub-install --efi-directory=/boot/efi
 grub-mkconfig -o /boot/grub/grub.cfg
 EOF
-echo "Setting up hostname..."
+eval_gettext "Setting up hostname..."; echo
 chroot /mnt/gentoo systemd-machine-id-setup
-echo "Setting up users..."
+eval_gettext "Setting up users..."; echo
 cat <<EOF | chroot /mnt/gentoo
 useradd -m -G users,wheel,audio,video,input -s /bin/bash \$USERNAME
 echo -e "\${USER_PASSWORD}\n\${USER_PASSWORD}" | passwd -q \$USERNAME
@@ -72,7 +85,7 @@ echo -e "\${ROOT_PASSWORD}\n\${ROOT_PASSWORD}" | passwd -q
 systemctl preset-all --preset-mode=enable-only
 EOF
 
-echo "Deleting stage archive..."
+eval_gettext "Deleting stage archive..."; echo
 rm /mnt/gentoo/\$(basename \$FILE)
 EOMF
 
@@ -137,11 +150,11 @@ automatic_install() {
 automatic_partitioning() {
 	[[ "$DISK" == *"nvme"* ]] && DISK_P="${DISK}p" || DISK_P="$DISK"
 
-	echo "Enter SWAP size in Gib:"
+	eval_gettext "Enter SWAP size in Gib:"; echo
 	echo ""
-	SWAP_SIZE=$(gum input --placeholder="If not sure set to (CPU_threads*2) - ram_size + 1 only if the result is positive, else set to 1")
+	SWAP_SIZE=$(gum input --placeholder="`eval_gettext \"If not sure set to (CPU_threads*2) - ram_size + 1 only if the result is positive, else set to 1\"`")
 
-	gum confirm "All content from $DISK will be loose, continue?" || exit_ "Exiting..."
+	gum confirm "`eval_gettext \"All content from \\\$DISK will be loose, continue?\"`" || exit_ "`eval_gettext \"Exiting...\"`"
 
 	SFDISK_CONFIG="label: gpt
 	"
@@ -170,41 +183,41 @@ showkeymap() {
 }
 
 root_password() {
-	echo "Root account configuration:"
+	eval_gettext "Root account configuration:"; echo
 	echo ""
-	ROOT_PASSWORD=$(gum input --password --placeholder="Enter root password")
+	ROOT_PASSWORD=$(gum input --password --placeholder="`eval_gettext \"Enter root password\"`")
 }
 
 user_account() {
-	echo "User account creation: "
+	eval_gettext "User account creation:"; echo
 	echo ""
-    USERNAME=$(gum input --placeholder="Enter username")
-    USER_PASSWORD=$(gum input --password --placeholder "Enter $USERNAME's password")
+    USERNAME=$(gum input --placeholder="`eval_gettext \"Enter username\"`")
+    USER_PASSWORD=$(gum input --password --placeholder "`eval_gettext \"Enter \\\$USERNAME's password\"`")
 }
 
 stage_selection() {
-	echo "STAGE SELECTION:"
+	eval_gettext "STAGE SELECTION:"; echo
 	echo ""
 	ARCHIVES=/mnt/cdrom/*.tar.xz
 	if [ "${#ARCHIVES[@]}" == "1" ]; then
 		FILE=${ARCHIVES[0]}
 	else
-		FILE=$(gum choose --header="Select the wanted stage:" ${ARCHIVES[@]})
+		FILE=$(gum choose --header="`eval_gettext \"Select the wanted stage:\"`" ${ARCHIVES[@]})
 	fi
 }
 
 disk_selection() {
-	echo "Disk selection:"
+	eval_gettext "Disk selection:"; echo
 	echo ""
     disks=$(lsblk -o NAME,SIZE,MODEL -d -p | grep -v "loop0" | grep -v "sr0" | grep -v "zram0" | tail -n +2)
-    DISK=$(echo "$disks" | gum choose --header="Select the disk to install Cambria into:" | cut -d ' ' -f 1)
+    DISK=$(echo "$disks" | gum choose --header="`eval_gettext \"Select the disk to install Cambria into:\"`" | cut -d ' ' -f 1)
 }
 
 root_part_selection() {
 	parts=$(ls $DISK* | grep "$DISK.*" | tail -n +2)
-	echo "Root partition selection:"
+	eval_gettext "Root partition selection:"; echo
 	echo ""
-    ROOT_PART=$(gum choose --header="Select the root partition: (/)" $parts)
+    ROOT_PART=$(gum choose --header="`eval_gettext \"Select the root partition: (/)\"`" $parts)
 }
 
 uefi_part_selection() {
@@ -215,9 +228,9 @@ uefi_part_selection() {
 		[ "$part" != "$ROOT_PART" ] && parts+="$part "
 	done
 	
-	echo "UEFI partition selection:"
+	eval_gettext "UEFI partition selection:"; echo
 	echo ""
-    UEFI_PART=$(gum choose --header="Select the efi partiton: (/boot/efi)" $parts)
+    UEFI_PART=$(gum choose --header="`eval_gettext \"Select the efi partiton: (/boot/efi)\"`" $parts)
 }
 
 swap_part_selection() {
@@ -228,42 +241,48 @@ swap_part_selection() {
 		[ "$part" != "$ROOT_PART" ] && [ "$part" != "$UEFI_PART" ] && parts+="$part "
 	done
 
-	echo "SWAP partition selection:"
+	eval_gettext "SWAP partition selection:"; echo
 	echo ""
-	SWAP_PART=$(gum choose --header="Select the swap partition:" $parts)
+	SWAP_PART=$(gum choose --header="`eval_gattext \"Select the swap partition:\"`" $parts)
 }
 
 config_keymap() {
 	unset KEYMAP keymappart
-	echo "Keymap selection:"
+	eval_gettext "Keymap selection:"; echo
 	echo ""
-	keymappart=$(showkeymap | gum filter --placeholder="Enter and find your keymap...")
+	keymappart=$(showkeymap | gum filter --placeholder="`eval_gettext \"Enter and find your keymap...\"`")
+}
+
+locale_selection() {
+	export LC_ALL=$(gum choose --header="`eval_gettext \"Select the locale to use:\"`" ${SUPPORTED_LOCALES[@]})
 }
 
 echo "========================================================================"
 echo "                     WELCOME ON CAMBRIA LINUX !                         "
 echo "========================================================================"
 echo ""
-echo "This script is here to help you install our distro easily.              "
-echo "Let us guide you step-by-step and you'll have a fully working Gentoo !  "
+
+#locale_selection
+
+eval_gettext "This script is here to help you install our distro easily.              "; echo
+eval_gettext "Let us guide you step-by-step and you'll have a fully working Gentoo !  "; echo
 echo ""
-echo "Let's start !"
+eval_gettext "Let's start !"; echo
 echo ""
 
-gum confirm "Ready?" || exit_ "See you next time!"
+gum confirm "`eval_gettext \"Ready?\"`" || exit_ "`eval_gettext \"See you next time!\"`"
 
 echo ""
-
 installation_mode_selection
 
-gum confirm "Install Cambria on $ROOT_PART from $DISK ? DATA MAY BE LOST!" || exit_ "Installation aborted, exiting."
+gum confirm "`eval_gettext \"Install Cambria on \\\$ROOT_PART from \\\$DISK ? DATA MAY BE LOST!\"`" || exit_ "`eval_gettext \"Installation aborted, exiting.\"`"
 
-gum spin -s pulse --show-output --title="Please wait while the script is doing the install for you :D" /usr/bin/env ROOT_PART=$ROOT_PART UEFI_PART=$UEFI_PART KEYMAP=$KEYMAP USERNAME=$USERNAME USER_PASSWORD=$USER_PASSWORD ROOT_PASSWORD=$ROOT_PASSWORD FILE=$FILE SWAP_PART=$SWAP_PART bash ./system_install.sh
+gum spin -s pulse --show-output --title="`eval_gettext \"Please wait while the script is doing the install for you :D\"`" /usr/bin/env ROOT_PART=$ROOT_PART UEFI_PART=$UEFI_PART KEYMAP=$KEYMAP USERNAME=$USERNAME USER_PASSWORD=$USER_PASSWORD ROOT_PASSWORD=$ROOT_PASSWORD FILE=$FILE SWAP_PART=$SWAP_PART bash ./system_install.sh
 
 clear
 
 # Locale configuration
-LOCALE=$(grep "UTF-8" /mnt/gentoo/usr/share/i18n/SUPPORTED | awk '{print $1}' | sed 's/^#//;s/\.UTF-8//' | gum filter --limit 1 --header "Choose your locale:")
+LOCALE=$(grep "UTF-8" /mnt/gentoo/usr/share/i18n/SUPPORTED | awk '{print $1}' | sed 's/^#//;s/\.UTF-8//' | gum filter --limit 1 --header "`eval_gettext \"Choose your locale:\"`")
 echo "$LOCALE.UTF-8 UTF-8" >> /mnt/gentoo/etc/locale.gen
 cat <<EOF | chroot /mnt/gentoo
 locale-gen
@@ -272,7 +291,7 @@ EOF
 
 # Keymap configuration
 xkb_symbols=$(find /mnt/gentoo/usr/share/X11/xkb/symbols -maxdepth 1 -type f)
-X11_KEYMAP=$(for file in ${xkb_symbols[@]}; do [ "$(cat $file | grep '// Keyboard layouts')" != "" ] && echo $(basename $file) ; done | sort | gum filter --header "Choose a X11 keymap:")
+X11_KEYMAP=$(for file in ${xkb_symbols[@]}; do [ "$(cat $file | grep '// Keyboard layouts')" != "" ] && echo $(basename $file) ; done | sort | gum filter --header "`eval_gettext \"Choose a X11 keymap:\"`")
 
 mkdir -p /mnt/gentoo/etc/X11/xorg.conf.d
 cat <<EOF > /mnt/gentoo/etc/X11/xorg.conf.d/00-keyboard.conf
@@ -295,14 +314,14 @@ for l in /mnt/gentoo/usr/share/zoneinfo/*; do
 	listloc="$listloc $l"
 done
 
-location=$(echo $listloc | tr ' ' '\n' | gum filter --header "Choose a location:")
+location=$(echo $listloc | tr ' ' '\n' | gum filter --header "`eval_gettext \"Choose a location:\"`")
 
 for c in /mnt/gentoo/usr/share/zoneinfo/$location/*; do
 	c=${c##*/}
 	listc="$listc $c"
 done
 
-country=$(echo $listc | tr ' ' '\n' | gum filter --header "Choose a city:")
+country=$(echo $listc | tr ' ' '\n' | gum filter --header "`eval_gettext \"Choose a city:\"`")
 rm -f /mnt/gentoo/etc/localtime
 ln -s /usr/share/zoneinfo/$location/$country /mnt/gentoo/etc/localtime
 
@@ -321,8 +340,8 @@ su $USERNAME -c "cd /home/$USERNAME && LANG=$LOCALE.UTF-8 xdg-user-dirs-update"
 EOF
 
 clear
-echo "Installation has finished !"
-echo "Press R to reboot..."
+eval_gettext "Installation has finished !"; echo
+eval_gettext "Press R to reboot..."; echo
 read REBOOT
 
 if [ "$REBOOT" == "R" ] || [ "$REBOOT" == "r" ]; then

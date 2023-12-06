@@ -1,0 +1,74 @@
+# Cambria Linux l10n files
+# Copyright (C) 2023
+# This file is distributed under the same license as the PACKAGE package.
+# Babilinx <babilinx.evx1o@simplelogin.com>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Cambria Linux 0.3\n"
+"Report-Msgid-Bugs-To: Cambria Linux Team on Github\n"
+"POT-Creation-Date: 2023-09-17 17:30+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: post-install/cambria-center.sh:33
+#, sh-format
+msgid ""
+"You're not running cambria-center as root... Please type root password here."
+msgstr ""
+
+#: post-install/cambria-center.sh:75
+#, sh-format
+msgid "******Activation of testing kernel******"
+msgstr ""
+
+#: post-install/cambria-center.sh:88
+#, sh-format
+msgid "Build jobs (VERY IMPORTANT)"
+msgstr ""
+
+#: post-install/cambria-center.sh:89
+#, sh-format
+msgid "L10N Configuration (VERY IMPORTANT)"
+msgstr ""
+
+#: post-install/cambria-center.sh:90
+#, sh-format
+msgid "CPU optimizer (takes a while)"
+msgstr ""
+
+#: post-install/cambria-center.sh:91
+#, sh-format
+msgid "Clean VIDEO_CARDS (takes a while)"
+msgstr ""
+
+#: post-install/cambria-center.sh:92
+#, sh-format
+msgid "Exit"
+msgstr ""
+
+#: post-install/cambria-center.sh:98
+#, sh-format
+msgid "Select a number of MAKE jobs"
+msgstr ""
+
+#: post-install/cambria-center.sh:101
+#, sh-format
+msgid "Select a number of EMERGE jobs"
+msgstr ""
+
+#: post-install/cambria-center.sh:109
+#, sh-format
+msgid "What's your L10N config (usually similar to your country) ?"
+msgstr ""
+
+#: post-install/cambria-center.sh:123
+#, sh-format
+msgid "What GPU(s) do you have ?"
+msgstr ""
