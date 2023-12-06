@@ -262,7 +262,7 @@ echo "                     WELCOME ON CAMBRIA LINUX !                         "
 echo "========================================================================"
 echo ""
 
-locale_selection
+#locale_selection
 
 eval_gettext "This script is here to help you install our distro easily.              "; echo
 eval_gettext "Let us guide you step-by-step and you'll have a fully working Gentoo !  "; echo
