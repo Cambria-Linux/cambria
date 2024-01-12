@@ -1,0 +1,73 @@
+# Cambria Linux l10n files
+# Copyright (C) 2023
+# This file is distributed under the same license as the PACKAGE package.
+# Babilinx <babilinx.evx1o@simplelogin.com>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Cambria Linux 0.3\n"
+"Report-Msgid-Bugs-To: Cambria Linux Team on Github\n"
+"POT-Creation-Date: 2023-09-16 12:10+0200\n"
+"PO-Revision-Date: 2023-12-06 15:15+0200\n"
+"Last-Translator: Babilinx <babilinx.evx1o@simplelogin.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: Bash; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: system_install.sh:8
+#, sh-format
+msgid "Mounting root partition"
+msgstr "Montage de la partition racine..."
+
+#: system_install.sh:17
+#, sh-format
+msgid "Extracting stage archive..."
+msgstr "Extraction de l'archive du stage..."
+
+#: system_install.sh:22
+#, sh-format
+msgid "Mounting UEFI partition..."
+msgstr "Montage de la partition UEFI..."
+
+#: system_install.sh:27
+#, sh-format
+msgid "Activating SWAP partition..."
+msgstr "Activation du SWAP..."
+
+#: system_install.sh:30
+#, sh-format
+msgid "Creating fstab..."
+msgstr "Création du fstab..."
+
+#: system_install.sh:36
+#, sh-format
+msgid "Configuring keymap..."
+msgstr "Configuration de la disposition du clavier..."
+
+#: system_install.sh:40
+#, sh-format
+msgid "Chroot inside Cambria..."
+msgstr "Chroot dans Cambria..."
+
+#: system_install.sh:49
+#, sh-format
+msgid "Installing GRUB..."
+msgstr "Installation de GRUB..."
+
+#: system_install.sh:54
+#, sh-format
+msgid "Setting up hostname..."
+msgstr "Paramètrage du nom d'hôte..."
+
+#: system_install.sh:56
+#, sh-format
+msgid "Setting up users..."
+msgstr "Paramètrage des utilisateurs..."
+
+#: system_install.sh:64
+#, sh-format
+msgid "Deleting stage archive..."
+msgstr "Suppression de l'archive du stage..."
